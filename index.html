@@ -2,129 +2,330 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soccer Hub - Team Management</title>
 
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
-
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
     * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #0a0f1a;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 100%);
       color: #e2e8f0;
+      min-height: 100vh;
     }
 
-    .gradient-primary {
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
     }
 
-    .gradient-card {
-      background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    }
-
-    .glass {
+    .card {
       background: rgba(30, 41, 59, 0.6);
       backdrop-filter: blur(12px);
       border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
     }
 
     .btn-primary {
       background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-      transition: all 0.2s;
+      color: white;
     }
 
-    .btn-primary:active {
-      transform: scale(0.98);
+    .btn-primary:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
     }
 
     .btn-secondary {
       background: rgba(148, 163, 184, 0.1);
-      transition: all 0.2s;
-    }
-
-    .btn-secondary:active {
-      transform: scale(0.98);
-      background: rgba(148, 163, 184, 0.15);
-    }
-
-    input, select, textarea {
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(148, 163, 184, 0.2);
       color: #e2e8f0;
-      transition: all 0.2s;
     }
 
-    input:focus, select:focus, textarea:focus {
+    input, select {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+      background: rgba(15, 23, 42, 0.5);
+      color: #e2e8f0;
+      font-size: 1rem;
+    }
+
+    input:focus, select:focus {
       outline: none;
       border-color: #0ea5e9;
       box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
     }
 
-    input::placeholder, textarea::placeholder {
-      color: rgba(148, 163, 184, 0.4);
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .login-box {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      border-radius: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+    }
+
+    .tab-bar {
+      display: flex;
+      gap: 0.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 0.25rem;
+      border-radius: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.75rem;
+      background: transparent;
+      border: none;
+      color: rgba(226, 232, 240, 0.5);
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      color: white;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .error {
+      color: #f87171;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .success {
+      color: #4ade80;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 0.75rem;
+      padding: 1rem;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #06b6d4;
+    }
+
+    .nav {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+      border-radius: 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      padding: 0.5rem 1rem;
+      background: transparent;
+      border: none;
+      color: rgba(226, 232, 240, 0.6);
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      color: #e2e8f0;
+      background: rgba(148, 163, 184, 0.1);
+    }
+
+    .nav-btn.active {
+      color: #06b6d4;
+      background: rgba(6, 182, 212, 0.1);
     }
 
     .score-display {
-      font-size: clamp(3rem, 10vw, 5rem);
+      font-size: 4rem;
       font-weight: 900;
-      line-height: 1;
       background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
+    .game-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .game-bar {
+      width: 4px;
+      height: 48px;
+      border-radius: 2px;
+    }
+
+    .bar-win { background: #10b981; }
+    .bar-loss { background: #ef4444; }
+    .bar-draw { background: #6b7280; }
+    .bar-upcoming { background: #3b82f6; }
+
+    .player-card {
+      background: rgba(30, 41, 59, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(148, 163, 184, 0.1);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
     .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
       background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.2rem;
     }
 
-    @keyframes slideUp {
-      from {
-        transform: translateY(100%);
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    @media (max-width: 768px) {
+      .score-display {
+        font-size: 3rem;
       }
-      to {
-        transform: translateY(0);
-      }
-    }
-
-    .slide-up {
-      animation: slideUp 0.3s ease-out;
-    }
-
-    .pitch {
-      background: linear-gradient(135deg, #15803d 0%, #166534 100%);
-      position: relative;
-    }
-
-    .pitch-lines {
-      position: absolute;
-      inset: 0;
-      opacity: 0.3;
     }
   </style>
 </head>
-<body class="overflow-x-hidden">
-  <div id="app" class="min-h-screen"></div>
+<body>
+  <div id="app">
+    <div class="login-container">
+      <div style="text-align: center;">
+        <div style="color: #94a3b8; font-size: 1.5rem; margin-top: 2rem;">Loading...</div>
+      </div>
+    </div>
+  </div>
 
   <script>
+    console.log('App starting...');
+
+    // Check if Supabase loaded
+    if (typeof supabase === 'undefined') {
+      document.getElementById('app').innerHTML = `
+        <div class="login-container">
+          <div style="text-align: center; color: #f87171;">
+            <h2>Error Loading App</h2>
+            <p>Supabase library failed to load. Please refresh the page.</p>
+          </div>
+        </div>
+      `;
+      throw new Error('Supabase not loaded');
+    }
+
+    console.log('Supabase loaded successfully');
+
     // Initialize Supabase
-    const supabase = window.supabase.createClient(
+    const sb = supabase.createClient(
       'https://fmaingdxxgbrqikhvahn.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZtYWluZ2R4eGdicnFpa2h2YWhuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxMTU3NTQsImV4cCI6MjA5MzY5MTc1NH0.piDxT5Mjqd1HPxHwMwdWBK5vX9pJaQfCTODnZVkjST8'
     );
+
+    console.log('Supabase client created');
 
     // State
     let state = {
@@ -133,11 +334,11 @@
       players: [],
       games: [],
       view: 'login',
-      currentGame: null,
-      tickInterval: null
+      activeGame: null,
+      timerInterval: null
     };
 
-    // Seeded games
+    // Seed games
     const SEED_GAMES = [
       {opponent:"JC United FC",date:"2026-02-28",time:"11:30",venue:"HP 12 West",home_score:5,away_score:1,finished:true},
       {opponent:"Athletico Espanol",date:"2026-03-14",time:"10:00",venue:"HP 11 West",home_score:0,away_score:3,finished:true},
@@ -152,11 +353,8 @@
     ];
 
     // Utility functions
-    const formatTime = (ms) => {
-      const s = Math.floor(ms / 1000);
-      const m = Math.floor(s / 60);
-      const sec = s % 60;
-      return `${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+    const getInitials = (name) => {
+      return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
     };
 
     const formatDate = (dateStr) => {
@@ -168,43 +366,55 @@
       });
     };
 
-    const getInitials = (name) => {
-      return name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const formatTime = (ms) => {
+      const totalSeconds = Math.floor(ms / 1000);
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
 
-    const getAvatarColor = (id) => {
-      const colors = [
-        'from-blue-500 to-cyan-500',
-        'from-purple-500 to-pink-500',
-        'from-orange-500 to-red-500',
-        'from-green-500 to-emerald-500',
-        'from-indigo-500 to-blue-500',
-        'from-pink-500 to-rose-500',
-        'from-teal-500 to-cyan-500',
-        'from-violet-500 to-purple-500',
-        'from-amber-500 to-orange-500',
-        'from-lime-500 to-green-500'
-      ];
-      const hash = (id || '').split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-      return colors[hash % colors.length];
+    const calculatePlayerStats = (playerId) => {
+      let totalGoals = 0;
+      let totalPlaytime = 0;
+
+      for (const game of state.games) {
+        // Count goals
+        if (game.goals) {
+          totalGoals += game.goals.filter(g => g.player_id === playerId).length;
+        }
+
+        // Sum playtime
+        if (game.player_times && game.player_times[playerId]) {
+          totalPlaytime += game.player_times[playerId];
+        }
+      }
+
+      return { goals: totalGoals, playtime: totalPlaytime };
     };
 
-    // Data functions
+    // Load data
     async function loadData() {
       if (!state.team) return;
 
-      const [playersRes, gamesRes] = await Promise.all([
-        supabase.from('players').select('*').eq('team_id', state.team.id).order('created_at'),
-        supabase.from('games').select('*').eq('team_id', state.team.id).order('date')
-      ]);
+      try {
+        const [playersRes, gamesRes] = await Promise.all([
+          sb.from('players').select('*').eq('team_id', state.team.id).order('created_at'),
+          sb.from('games').select('*').eq('team_id', state.team.id).order('date')
+        ]);
 
-      state.players = playersRes.data || [];
-      state.games = gamesRes.data || [];
+        state.players = playersRes.data || [];
+        state.games = gamesRes.data || [];
+        console.log('Data loaded:', state.players.length, 'players,', state.games.length, 'games');
+      } catch (error) {
+        console.error('Error loading data:', error);
+      }
     }
 
     // Login
     async function handleLogin(teamName, password, role) {
-      const { data, error } = await supabase
+      console.log('Attempting login:', teamName, role);
+
+      const { data, error } = await sb
         .from('teams')
         .select('*')
         .ilike('name', teamName)
@@ -227,7 +437,9 @@
     }
 
     async function handleCreateTeam(name, coachPass, playerPass) {
-      const { data: existing } = await supabase
+      console.log('Creating team:', name);
+
+      const { data: existing } = await sb
         .from('teams')
         .select('id')
         .ilike('name', name);
@@ -236,19 +448,17 @@
         throw new Error('Team name already taken');
       }
 
-      const formations = [
-        {
-          name: "1-2-3-1",
-          positions: [
-            {id:"gk",label:"GK",x:50,y:85},
-            {id:"lb",label:"LB",x:25,y:65},{id:"rb",label:"RB",x:75,y:65},
-            {id:"lw",label:"LW",x:15,y:40},{id:"cm",label:"CM",x:50,y:50},{id:"rw",label:"RW",x:85,y:40},
-            {id:"st",label:"ST",x:50,y:15}
-          ]
-        }
-      ];
+      const formations = [{
+        name: "1-2-3-1",
+        positions: [
+          {id:"gk",label:"GK",x:50,y:85},
+          {id:"lb",label:"LB",x:25,y:65},{id:"rb",label:"RB",x:75,y:65},
+          {id:"lw",label:"LW",x:15,y:40},{id:"cm",label:"CM",x:50,y:50},{id:"rw",label:"RW",x:85,y:40},
+          {id:"st",label:"ST",x:50,y:15}
+        ]
+      }];
 
-      const { data: team, error } = await supabase
+      const { data: team, error } = await sb
         .from('teams')
         .insert({
           name,
@@ -264,8 +474,8 @@
 
       if (error) throw error;
 
-      // Seed games if name contains spiderz or misumi
-      if (name.toLowerCase().match(/spiderz|misumi/)) {
+      // Seed games
+      if (name.toLowerCase().match(/spiderz 16b|itejugheueue/)) {
         const games = SEED_GAMES.map(g => ({
           ...g,
           team_id: team.id,
@@ -276,7 +486,7 @@
           player_on_field: {},
           film_link: ''
         }));
-        await supabase.from('games').insert(games);
+        await sb.from('games').insert(games);
       }
 
       return team;
@@ -285,50 +495,38 @@
     // Render functions
     function renderLogin() {
       return `
-        <div class="min-h-screen flex items-center justify-center p-6">
-          <div class="w-full max-w-md">
-            <div class="text-center mb-8">
-              <div class="w-20 h-20 mx-auto mb-4 rounded-2xl gradient-primary flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v8m-4-4h8"/></svg>
-              </div>
-              <h1 class="text-3xl font-bold mb-2">Soccer Hub</h1>
-              <p class="text-slate-400">Professional team management</p>
-            </div>
+        <div class="login-container">
+          <div class="login-box">
+            <div class="logo">⚽</div>
+            <h1 style="text-align: center; margin-bottom: 0.5rem;">Soccer Hub</h1>
+            <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Professional Team Management</p>
 
-            <div class="glass rounded-2xl p-6">
-              <div class="flex gap-2 mb-6 bg-slate-900/50 p-1 rounded-xl">
-                <button onclick="switchTab('login')" id="tab-login" class="flex-1 py-2.5 rounded-lg font-medium transition btn-primary text-white">
-                  Sign In
-                </button>
-                <button onclick="switchTab('create')" id="tab-create" class="flex-1 py-2.5 rounded-lg font-medium transition text-slate-400">
-                  New Team
-                </button>
+            <div class="card">
+              <div class="tab-bar">
+                <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+                <button class="tab-btn" id="tab-create" onclick="switchTab('create')">New Team</button>
               </div>
 
               <div id="login-form">
-                <div class="space-y-4">
-                  <input id="l-team" type="text" placeholder="Team name" class="w-full px-4 py-3 rounded-xl" />
-                  <select id="l-role" class="w-full px-4 py-3 rounded-xl">
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <input id="l-team" type="text" placeholder="Team name" />
+                  <select id="l-role">
                     <option value="coach">Coach</option>
                     <option value="player">Player / Public</option>
                   </select>
-                  <input id="l-pass" type="password" placeholder="Password" class="w-full px-4 py-3 rounded-xl" />
-                  <div id="login-error" class="text-red-400 text-sm text-center hidden"></div>
-                  <button onclick="doLogin()" class="w-full py-3 rounded-xl font-semibold btn-primary text-white">
-                    Sign In
-                  </button>
+                  <input id="l-pass" type="password" placeholder="Password" />
+                  <div id="login-error" class="error hidden"></div>
+                  <button onclick="doLogin()" class="btn btn-primary" style="width: 100%;">Sign In</button>
                 </div>
               </div>
 
               <div id="create-form" class="hidden">
-                <div class="space-y-4">
-                  <input id="c-name" type="text" placeholder="Team name" class="w-full px-4 py-3 rounded-xl" />
-                  <input id="c-coach" type="password" placeholder="Coach password" class="w-full px-4 py-3 rounded-xl" />
-                  <input id="c-player" type="password" placeholder="Player password (optional)" class="w-full px-4 py-3 rounded-xl" />
-                  <div id="create-error" class="text-red-400 text-sm text-center hidden"></div>
-                  <button onclick="doCreate()" class="w-full py-3 rounded-xl font-semibold btn-primary text-white">
-                    Create Team
-                  </button>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                  <input id="c-name" type="text" placeholder="Team name" />
+                  <input id="c-coach" type="password" placeholder="Coach password" />
+                  <input id="c-player" type="password" placeholder="Player password (optional)" />
+                  <div id="create-error" class="error hidden"></div>
+                  <button onclick="doCreate()" class="btn btn-primary" style="width: 100%;">Create Team</button>
                 </div>
               </div>
             </div>
@@ -344,94 +542,428 @@
       const draws = finished.filter(g => g.home_score === g.away_score).length;
       const totalGoals = state.games.reduce((sum, g) => sum + (g.goals?.length || 0), 0);
 
-      const upcoming = state.games.filter(g => !g.finished).sort((a, b) => a.date.localeCompare(b.date))[0];
-      const lastGame = finished.sort((a, b) => b.date.localeCompare(a.date))[0];
-
-      // Top scorers
-      const scorers = state.players.map(p => ({
-        ...p,
-        goals: state.games.reduce((sum, g) =>
-          sum + (g.goals?.filter(gl => gl.player_id === p.id).length || 0), 0)
-      })).filter(p => p.goals > 0).sort((a, b) => b.goals - a.goals);
-
-      const showLeaderboard = state.user.role === 'coach' || state.team.leaderboard_public;
-
       return `
-        <div class="space-y-6">
-          <!-- Stats -->
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="glass rounded-xl p-4">
-              <div class="text-slate-400 text-xs font-medium uppercase mb-1">Record</div>
-              <div class="text-2xl font-bold">${wins}–${losses}–${draws}</div>
-              <div class="text-xs text-slate-500">W – L – D</div>
+        <div class="container">
+          <h1>Dashboard</h1>
+
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-label">Record</div>
+              <div class="stat-value">${wins}–${losses}–${draws}</div>
             </div>
-            <div class="glass rounded-xl p-4">
-              <div class="text-slate-400 text-xs font-medium uppercase mb-1">Goals</div>
-              <div class="text-2xl font-bold text-cyan-400">${totalGoals}</div>
+            <div class="stat-card">
+              <div class="stat-label">Goals</div>
+              <div class="stat-value">${totalGoals}</div>
             </div>
-            <div class="glass rounded-xl p-4">
-              <div class="text-slate-400 text-xs font-medium uppercase mb-1">Games</div>
-              <div class="text-2xl font-bold">${finished.length}</div>
+            <div class="stat-card">
+              <div class="stat-label">Games</div>
+              <div class="stat-value">${finished.length}</div>
             </div>
-            <div class="glass rounded-xl p-4">
-              <div class="text-slate-400 text-xs font-medium uppercase mb-1">Players</div>
-              <div class="text-2xl font-bold">${state.players.length}</div>
+            <div class="stat-card">
+              <div class="stat-label">Players</div>
+              <div class="stat-value">${state.players.length}</div>
             </div>
           </div>
 
-          ${upcoming ? `
-            <div class="gradient-card rounded-2xl p-6">
-              <div class="text-cyan-400 text-xs font-bold uppercase mb-2">Next Game</div>
-              <h2 class="text-2xl font-bold mb-2">vs ${upcoming.opponent}</h2>
-              <p class="text-slate-400 mb-4">${formatDate(upcoming.date)} · ${upcoming.time} · ${upcoming.venue}</p>
-              ${state.user.role === 'coach' ? `
-                <button onclick="setView('live')" class="btn-primary px-6 py-2.5 rounded-lg font-semibold text-white">
-                  Open Live Tracker
-                </button>
-              ` : ''}
+          <div class="card">
+            <p style="color: #94a3b8;">Welcome to ${state.team.name}!</p>
+            <p style="margin-top: 0.5rem; color: #94a3b8;">Full features coming soon...</p>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderHistory() {
+      const finished = state.games.filter(g => g.finished).sort((a, b) => b.date.localeCompare(a.date));
+      const upcoming = state.games.filter(g => !g.finished).sort((a, b) => a.date.localeCompare(b.date));
+
+      return `
+        <div class="container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h1>Schedule & Results</h1>
+            ${state.user.role === 'coach' ? `
+              <button onclick="showAddGame()" class="btn btn-primary">+ Add Game</button>
+            ` : ''}
+          </div>
+
+          <div id="add-game-form" class="hidden card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">New Game</h2>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+              <input id="ng-opponent" type="text" placeholder="Opponent name" />
+              <input id="ng-date" type="date" />
+              <input id="ng-time" type="time" />
+              <input id="ng-venue" type="text" placeholder="Venue" />
+              <button onclick="createGame()" class="btn btn-primary" style="width: 100%;">Create Game</button>
             </div>
+          </div>
+
+          ${upcoming.length > 0 ? `
+            <h2 style="font-size: 0.875rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0.75rem;">UPCOMING</h2>
+            ${upcoming.map(g => `
+              <div class="game-card">
+                <div class="game-bar bar-upcoming"></div>
+                <div style="flex: 1;">
+                  <div style="font-weight: 600;">vs ${g.opponent}</div>
+                  <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
+                </div>
+              </div>
+            `).join('')}
           ` : ''}
 
-          ${lastGame ? `
-            <div class="glass rounded-xl p-6">
-              <div class="text-slate-400 text-xs font-medium uppercase mb-3">Last Result</div>
-              <div class="flex items-center gap-4">
-                <div class="flex-1">
-                  <div class="text-sm text-slate-400 mb-2">vs ${lastGame.opponent} · ${formatDate(lastGame.date)}</div>
-                  <div class="text-4xl font-bold">
-                    ${lastGame.home_score}
-                    <span class="text-slate-600 text-2xl mx-2">–</span>
-                    ${lastGame.away_score}
+          ${finished.length > 0 ? `
+            <h2 style="font-size: 0.875rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0.75rem;">RESULTS</h2>
+            ${finished.map(g => {
+              const won = g.home_score > g.away_score;
+              const lost = g.home_score < g.away_score;
+              const barClass = won ? 'bar-win' : lost ? 'bar-loss' : 'bar-draw';
+              return `
+                <div class="game-card">
+                  <div class="game-bar ${barClass}"></div>
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600;">vs ${g.opponent}</div>
+                    <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-size: 1.25rem; font-weight: 700;">${g.home_score} – ${g.away_score}</div>
+                    <div style="font-size: 0.75rem; color: ${won ? '#10b981' : lost ? '#ef4444' : '#6b7280'};">
+                      ${won ? 'WIN' : lost ? 'LOSS' : 'DRAW'}
+                    </div>
                   </div>
                 </div>
-                <div class="px-4 py-2 rounded-xl font-bold ${
-                  lastGame.home_score > lastGame.away_score ? 'bg-green-500/20 text-green-400' :
-                  lastGame.home_score < lastGame.away_score ? 'bg-red-500/20 text-red-400' :
-                  'bg-slate-500/20 text-slate-400'
-                }">
-                  ${lastGame.home_score > lastGame.away_score ? 'W' : lastGame.home_score < lastGame.away_score ? 'L' : 'D'}
+              `;
+            }).join('')}
+          ` : ''}
+        </div>
+      `;
+    }
+
+    function renderRoster() {
+      return `
+        <div class="container">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h1>Roster (${state.players.length})</h1>
+            ${state.user.role === 'coach' ? `
+              <button onclick="showAddPlayer()" class="btn btn-primary">+ Add Player</button>
+            ` : ''}
+          </div>
+
+          <div id="add-player-form" class="hidden card" style="margin-bottom: 1.5rem;">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">New Player</h2>
+            <input id="np-name" type="text" placeholder="Player name" style="margin-bottom: 1rem;" />
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Photo (optional)</label>
+              <input id="np-photo" type="file" accept="image/*" style="padding: 0.5rem;" />
+            </div>
+            <button onclick="addPlayer()" class="btn btn-primary" style="width: 100%;">Add Player</button>
+          </div>
+
+          <div class="grid grid-2">
+            ${state.players.map(p => {
+              const stats = calculatePlayerStats(p.id);
+              return `
+                <div class="player-card">
+                  ${p.photo ? `
+                    <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                  ` : `
+                    <div class="avatar">${getInitials(p.name)}</div>
+                  `}
+                  <div style="flex: 1;">
+                    <div style="font-weight: 600;">${p.name}</div>
+                    <div style="font-size: 0.875rem; color: #94a3b8;">⚽ ${stats.goals} goals · ${formatTime(stats.playtime)} played</div>
+                  </div>
+                  ${state.user.role === 'coach' ? `
+                    <button onclick="removePlayer('${p.id}')" class="btn-secondary" style="padding: 0.5rem;">×</button>
+                  ` : ''}
                 </div>
-              </div>
+              `;
+            }).join('')}
+          </div>
+
+          ${state.players.length === 0 ? `
+            <div style="text-align: center; padding: 3rem; color: #94a3b8;">
+              No players yet. Add your first player to get started!
             </div>
           ` : ''}
+        </div>
+      `;
+    }
 
-          ${showLeaderboard && scorers.length > 0 ? `
-            <div class="glass rounded-xl p-6">
-              <div class="flex items-center justify-between mb-4">
-                <h3 class="font-bold">Top Scorers</h3>
+    function renderLineup() {
+      const formations = state.team.formations || [];
+      const activeFormation = formations[state.team.active_formation || 0];
+      const lineup = state.team.lineup || {};
+
+      return `
+        <div class="container">
+          <h1>Lineup Builder</h1>
+
+          ${formations.length > 0 ? `
+            <div class="card" style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Formation</label>
+              <select onchange="changeFormation(this.value)" style="margin-bottom: 0;">
+                ${formations.map((f, idx) => `
+                  <option value="${idx}" ${idx === state.team.active_formation ? 'selected' : ''}>${f.name}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            ${activeFormation ? `
+              <div class="card">
+                <div style="position: relative; background: linear-gradient(to bottom, #10b981 0%, #059669 100%);
+                  border-radius: 0.75rem; padding: 2rem 1rem; min-height: 500px;">
+
+                  ${activeFormation.positions.map(pos => {
+                    const assignedPlayer = lineup[pos.id];
+                    const player = assignedPlayer ? state.players.find(p => p.id === assignedPlayer) : null;
+
+                    return `
+                      <div style="position: absolute; left: ${pos.x}%; top: ${pos.y}%;
+                        transform: translate(-50%, -50%); text-align: center;">
+                        <div style="width: 48px; height: 48px; border-radius: 50%;
+                          background: ${player ? 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)' : 'rgba(255, 255, 255, 0.3)'};
+                          border: 2px solid white; display: flex; align-items: center; justify-content: center;
+                          color: white; font-weight: 700; cursor: pointer; margin-bottom: 0.25rem;"
+                          onclick="assignPosition('${pos.id}')">
+                          ${player ? getInitials(player.name) : pos.label}
+                        </div>
+                        ${player ? `
+                          <div style="font-size: 0.75rem; color: white; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+                            ${player.name.split(' ')[0]}
+                          </div>
+                        ` : ''}
+                      </div>
+                    `;
+                  }).join('')}
+                </div>
+
+                <div id="assign-player" class="hidden" style="margin-top: 1rem;">
+                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Assign to <span id="pos-label"></span></h3>
+                  <select id="player-select" style="margin-bottom: 0.75rem;">
+                    <option value="">-- Clear Position --</option>
+                    ${state.players.map(p => `
+                      <option value="${p.id}">${p.name}</option>
+                    `).join('')}
+                  </select>
+                  <button onclick="savePosition()" class="btn btn-primary" style="width: 100%;">Save</button>
+                </div>
               </div>
-              <div class="space-y-3">
-                ${scorers.slice(0, 6).map((p, i) => `
-                  <div class="flex items-center gap-3">
-                    <div class="text-lg w-6">${i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}</div>
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(p.id)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      ${p.photo ? `<img src="${p.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(p.name)}
+            ` : ''}
+          ` : `
+            <div class="card">
+              <p style="color: #94a3b8;">No formations available</p>
+            </div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderSettings() {
+      return `
+        <div class="container">
+          <h1>Settings</h1>
+
+          <div class="card">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Team Information</h2>
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Team Name</label>
+              <div style="font-weight: 600; font-size: 1.125rem;">${state.team.name}</div>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">
+                Public Leaderboard
+              </label>
+              <label style="display: flex; align-items: center; cursor: pointer;">
+                <input type="checkbox" ${state.team.leaderboard_public ? 'checked' : ''}
+                  onchange="toggleLeaderboard(this.checked)"
+                  style="width: auto; margin-right: 0.5rem;" />
+                <span>Allow public access to team stats</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Passwords</h2>
+            <p style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 1rem;">
+              Update your team passwords
+            </p>
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Coach Password</label>
+              <input id="new-coach-pass" type="password" placeholder="New coach password" />
+            </div>
+            <div style="margin-bottom: 1rem;">
+              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Player Password</label>
+              <input id="new-player-pass" type="password" placeholder="New player password (optional)" />
+            </div>
+            <button onclick="updatePasswords()" class="btn btn-primary">Update Passwords</button>
+          </div>
+
+          <div class="card" style="border-color: rgba(239, 68, 68, 0.2);">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem; color: #f87171;">Danger Zone</h2>
+            <p style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 1rem;">
+              Permanently delete your team and all associated data
+            </p>
+            <button onclick="deleteTeam()" class="btn" style="background: #ef4444; color: white;">Delete Team</button>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderLiveGame() {
+      const upcomingGames = state.games.filter(g => !g.finished).sort((a, b) => a.date.localeCompare(b.date));
+
+      if (!state.activeGame) {
+        return `
+          <div class="container">
+            <h1>Live Game</h1>
+            ${upcomingGames.length > 0 ? `
+              <div class="card">
+                <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Select a game to track</h2>
+                ${upcomingGames.map(g => `
+                  <div class="game-card" onclick="startGame('${g.id}')" style="cursor: pointer;">
+                    <div class="game-bar bar-upcoming"></div>
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600;">vs ${g.opponent}</div>
+                      <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
                     </div>
-                    <div class="flex-1 font-medium">${p.name}</div>
-                    <div class="text-xl font-bold text-cyan-400">${p.goals}</div>
                   </div>
                 `).join('')}
               </div>
+            ` : `
+              <div class="card">
+                <p style="color: #94a3b8;">No upcoming games scheduled</p>
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      const game = state.activeGame;
+      const halfRunning = game.half_started_at !== null;
+
+      return `
+        <div class="container">
+          <div class="card" style="margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <div>
+                <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.25rem;">
+                  ${formatDate(game.date)} · ${game.time}
+                </div>
+                <div style="font-size: 1.5rem; font-weight: 700;">${state.team.name} vs ${game.opponent}</div>
+              </div>
+              <button onclick="endGame()" class="btn btn-secondary">End Game</button>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+              <div class="score-display" id="score-display">${game.home_score} – ${game.away_score}</div>
+              <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
+                <button onclick="adjustScore(-1)" class="btn btn-secondary">–</button>
+                <button onclick="showGoalScorer()" class="btn btn-primary">+ Goal</button>
+              </div>
+            </div>
+
+            <div id="goal-scorer-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+              background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+              <div class="card" style="max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Who scored?</h2>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  ${state.players.map(p => `
+                    <button onclick="addGoal('${p.id}')" class="btn btn-secondary" style="text-align: left; padding: 1rem;">
+                      <div style="display: flex; align-items: center; gap: 1rem;">
+                        ${p.photo ? `
+                          <img src="${p.photo}" alt="${p.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
+                        ` : `
+                          <div class="avatar" style="width: 40px; height: 40px; font-size: 1rem;">${getInitials(p.name)}</div>
+                        `}
+                        <span style="font-weight: 600;">${p.name}</span>
+                      </div>
+                    </button>
+                  `).join('')}
+                </div>
+                <button onclick="hideGoalScorer()" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Cancel</button>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
+              ${game.half === 0 ? `
+                <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1;">Start 1st Half</button>
+              ` : game.half === 1 ? `
+                ${halfRunning ? `
+                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1;">End 1st Half</button>
+                ` : `
+                  <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1;">Resume 1st Half</button>
+                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1;">Start 2nd Half</button>
+                `}
+              ` : game.half === 2 ? `
+                ${halfRunning ? `
+                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1;">End 2nd Half</button>
+                ` : `
+                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1;">Resume 2nd Half</button>
+                `}
+              ` : ''}
+            </div>
+
+            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0, 0, 0, 0.2); border-radius: 0.5rem;">
+              <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem;">
+                Half: ${game.half === 0 ? 'Not Started' : game.half === 1 ? '1st Half' : '2nd Half'}
+                ${halfRunning ? ' (Running)' : ' (Paused)'}
+              </div>
+              <div style="font-size: 0.875rem; color: #94a3b8;">
+                Film Link: <input id="film-link" type="text" value="${game.film_link || ''}" onchange="updateFilmLink(this.value)"
+                  style="display: inline-block; width: auto; min-width: 200px; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;" />
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Players on Field</h2>
+            <div id="players-list">
+              ${state.players.map(p => {
+                const isOnField = game.player_on_field?.[p.id] || false;
+                const totalTime = game.player_times?.[p.id] || 0;
+                const currentTime = isOnField && halfRunning ? Date.now() - game.half_started_at : 0;
+                const displayTime = totalTime + currentTime;
+
+                return `
+                  <div class="player-card" style="background: ${isOnField ? 'rgba(16, 185, 129, 0.1)' : 'rgba(30, 41, 59, 0.6)'};">
+                    ${p.photo ? `
+                      <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                    ` : `
+                      <div class="avatar">${getInitials(p.name)}</div>
+                    `}
+                    <div style="flex: 1;">
+                      <div style="font-weight: 600;">${p.name}</div>
+                      <div style="font-size: 0.875rem; color: #94a3b8;" id="timer-${p.id}">
+                        ${formatTime(displayTime)}
+                      </div>
+                    </div>
+                    <button onclick="togglePlayer('${p.id}')" class="btn ${isOnField ? 'btn-secondary' : 'btn-primary'}"
+                      style="padding: 0.5rem 1rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                      ${!halfRunning ? 'disabled' : ''}>
+                      ${isOnField ? 'Sub Out' : 'Sub In'}
+                    </button>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          </div>
+
+          ${game.goals?.length > 0 ? `
+            <div class="card">
+              <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Goals (${game.goals.length})</h2>
+              ${game.goals.map((goal, idx) => {
+                const player = state.players.find(p => p.id === goal.player_id);
+                return `
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem;
+                    background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; margin-bottom: 0.5rem;">
+                    <div>
+                      <div style="font-weight: 600;">${player?.name || 'Unknown'}</div>
+                      <div style="font-size: 0.875rem; color: #94a3b8;">${goal.minute}'</div>
+                    </div>
+                    <button onclick="removeGoal(${idx})" class="btn-secondary" style="padding: 0.5rem;">×</button>
+                  </div>
+                `;
+              }).join('')}
             </div>
           ` : ''}
         </div>
@@ -444,661 +976,50 @@
         : ['dashboard', 'history', 'roster'];
 
       return `
-        <!-- Top Nav (Desktop) -->
-        <nav class="hidden md:block sticky top-0 z-50 glass border-b border-slate-800">
-          <div class="max-w-7xl mx-auto px-6 h-16 flex items-center gap-4">
-            <div class="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center text-white font-bold">
-              ⚽
-            </div>
-            <div class="font-bold text-lg">${state.team.name}</div>
-            <div class="flex-1 flex gap-1 ml-8">
-              ${views.map(v => `
-                <button onclick="setView('${v}')" class="px-4 py-2 rounded-lg font-medium transition ${
-                  state.view === v ? 'text-cyan-400' : 'text-slate-400 hover:text-white'
-                }">
-                  ${v.charAt(0).toUpperCase() + v.slice(1)}
-                </button>
-              `).join('')}
-            </div>
-            <button onclick="logout()" class="btn-secondary px-4 py-2 rounded-lg font-medium">
-              Sign Out
-            </button>
-          </div>
-        </nav>
-
-        <!-- Content -->
-        <main class="max-w-7xl mx-auto px-4 md:px-6 py-6 pb-24 md:pb-6">
-          <div id="view-content">
-            ${state.view === 'dashboard' ? renderDashboard() :
-              state.view === 'history' ? renderHistory() :
-              state.view === 'roster' ? renderRoster() :
-              state.view === 'live' ? renderLive() :
-              state.view === 'lineup' ? renderLineup() :
-              state.view === 'settings' ? renderSettings() : ''}
-          </div>
-        </main>
-
-        <!-- Bottom Nav (Mobile) -->
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-800" style="padding-bottom: env(safe-area-inset-bottom);">
-          <div class="flex">
-            ${(state.user?.role === 'coach'
-              ? [{v:'dashboard',i:'home',l:'Home'},{v:'live',i:'play',l:'Live'},{v:'history',i:'clock',l:'History'},{v:'roster',i:'users',l:'Roster'}]
-              : [{v:'dashboard',i:'home',l:'Home'},{v:'history',i:'clock',l:'History'},{v:'roster',i:'users',l:'Roster'}]
-            ).map(item => `
-              <button onclick="setView('${item.v}')" class="flex-1 flex flex-col items-center gap-1 py-3 ${
-                state.view === item.v ? 'text-cyan-400' : 'text-slate-400'
-              }">
-                <i data-lucide="${item.i}" class="w-5 h-5"></i>
-                <span class="text-xs font-medium">${item.l}</span>
+        <div class="container">
+          <div class="nav">
+            <div style="flex: 1; font-weight: 700; font-size: 1.25rem;">⚽ ${state.team.name}</div>
+            ${views.map(v => `
+              <button onclick="setView('${v}')" class="nav-btn ${state.view === v ? 'active' : ''}">
+                ${v.charAt(0).toUpperCase() + v.slice(1)}
               </button>
             `).join('')}
-            ${state.user?.role === 'coach' ? `
-              <button onclick="toggleMenu()" class="flex-1 flex flex-col items-center gap-1 py-3 text-slate-400">
-                <i data-lucide="more-horizontal" class="w-5 h-5"></i>
-                <span class="text-xs font-medium">More</span>
-              </button>
-            ` : ''}
+            <button onclick="logout()" class="nav-btn">Sign Out</button>
           </div>
-        </nav>
+        </div>
 
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden fixed inset-0 z-50 md:hidden">
-          <div class="absolute inset-0 bg-black/50" onclick="toggleMenu()"></div>
-          <div class="absolute bottom-0 left-0 right-0 glass rounded-t-2xl p-6 slide-up" style="padding-bottom: env(safe-area-inset-bottom);">
-            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6"></div>
-            <button onclick="setView('lineup');toggleMenu()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-800/50 transition">
-              <i data-lucide="layout-grid" class="w-5 h-5"></i>
-              <span class="font-medium">Lineup</span>
-            </button>
-            <button onclick="setView('settings');toggleMenu()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-800/50 transition">
-              <i data-lucide="settings" class="w-5 h-5"></i>
-              <span class="font-medium">Settings</span>
-            </button>
-            <button onclick="logout()" class="w-full flex items-center gap-4 p-4 rounded-xl hover:bg-slate-800/50 transition text-red-400 mt-2">
-              <i data-lucide="log-out" class="w-5 h-5"></i>
-              <span class="font-medium">Sign Out</span>
-            </button>
-          </div>
+        <div id="view-content">
+          ${state.view === 'dashboard' ? renderDashboard() :
+            state.view === 'live' ? renderLiveGame() :
+            state.view === 'history' ? renderHistory() :
+            state.view === 'roster' ? renderRoster() :
+            state.view === 'lineup' ? renderLineup() :
+            state.view === 'settings' ? renderSettings() : ''}
         </div>
       `;
-    }
-
-    function renderHistory() {
-      const finished = state.games.filter(g => g.finished).sort((a, b) => b.date.localeCompare(a.date));
-      const upcoming = state.games.filter(g => !g.finished).sort((a, b) => a.date.localeCompare(b.date));
-
-      return `
-        <div class="space-y-6">
-          <h1 class="text-2xl font-bold">Schedule & Results</h1>
-
-          ${upcoming.length > 0 ? `
-            <div>
-              <h2 class="text-sm text-slate-400 font-medium uppercase mb-3">Upcoming</h2>
-              <div class="space-y-2">
-                ${upcoming.map(g => `
-                  <div class="glass rounded-xl p-4 flex items-center gap-4">
-                    <div class="w-1 h-12 bg-blue-500 rounded-full"></div>
-                    <div class="flex-1 min-w-0">
-                      <div class="font-semibold">vs ${g.opponent}</div>
-                      <div class="text-sm text-slate-400 truncate">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
-                    </div>
-                    <div class="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-lg text-sm font-medium whitespace-nowrap">
-                      Upcoming
-                    </div>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${finished.length > 0 ? `
-            <div>
-              <h2 class="text-sm text-slate-400 font-medium uppercase mb-3">Results</h2>
-              <div class="space-y-2">
-                ${finished.map(g => {
-                  const won = g.home_score > g.away_score;
-                  const lost = g.home_score < g.away_score;
-                  return `
-                    <div class="glass rounded-xl p-4 flex items-center gap-4">
-                      <div class="w-1 h-12 ${won ? 'bg-green-500' : lost ? 'bg-red-500' : 'bg-slate-500'} rounded-full"></div>
-                      <div class="flex-1 min-w-0">
-                        <div class="font-semibold">vs ${g.opponent}</div>
-                        <div class="text-sm text-slate-400 truncate">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
-                      </div>
-                      <div class="text-right">
-                        <div class="text-xl font-bold whitespace-nowrap">${g.home_score} – ${g.away_score}</div>
-                        <div class="text-xs font-medium ${won ? 'text-green-400' : lost ? 'text-red-400' : 'text-slate-400'}">
-                          ${won ? 'WIN' : lost ? 'LOSS' : 'DRAW'}
-                        </div>
-                      </div>
-                    </div>
-                  `;
-                }).join('')}
-              </div>
-            </div>
-          ` : ''}
-
-          ${state.games.length === 0 ? `
-            <div class="text-center py-12 text-slate-400">
-              <p>No games yet.</p>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }
-
-    function renderRoster() {
-      return `
-        <div class="space-y-6">
-          <div class="flex items-center justify-between">
-            <h1 class="text-2xl font-bold">Roster <span class="text-slate-400 text-lg font-normal">(${state.players.length})</span></h1>
-            ${state.user.role === 'coach' ? `
-              <button onclick="showAddPlayer()" class="btn-primary px-4 py-2 rounded-lg font-semibold text-white">
-                + Add Player
-              </button>
-            ` : ''}
-          </div>
-
-          <div id="add-player-form" class="hidden glass rounded-xl p-6">
-            <h3 class="font-bold mb-4">New Player</h3>
-            <div class="space-y-3">
-              <input id="np-name" type="text" placeholder="Player name" class="w-full px-4 py-3 rounded-xl" />
-              <div class="flex gap-3">
-                <button onclick="document.getElementById('np-file').click()" class="flex-1 btn-secondary px-4 py-3 rounded-xl font-medium">
-                  📷 <span id="photo-label">Add Photo</span>
-                </button>
-                <input type="file" id="np-file" accept="image/*" class="hidden" onchange="handlePhoto(this)" />
-                <button onclick="addPlayer()" class="flex-1 btn-primary px-4 py-3 rounded-xl font-semibold text-white">
-                  Add Player
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="grid md:grid-cols-2 gap-4">
-            ${state.players.map(p => {
-              const goals = state.games.reduce((sum, g) =>
-                sum + (g.goals?.filter(gl => gl.player_id === p.id).length || 0), 0);
-              const time = state.games.reduce((sum, g) =>
-                sum + (g.player_times?.[p.id] || 0), 0);
-
-              return `
-                <div class="glass rounded-xl p-4 flex items-center gap-4">
-                  <div class="w-12 h-12 rounded-full bg-gradient-to-br ${getAvatarColor(p.id)} flex items-center justify-center text-white font-bold flex-shrink-0">
-                    ${p.photo ? `<img src="${p.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(p.name)}
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="font-semibold truncate">${p.name}</div>
-                    <div class="text-sm text-slate-400">⚽ ${goals} goals · ${formatTime(time)} played</div>
-                  </div>
-                  ${state.user.role === 'coach' ? `
-                    <button onclick="removePlayer('${p.id}')" class="text-slate-400 hover:text-red-400 p-2 flex-shrink-0">
-                      <i data-lucide="x" class="w-5 h-5"></i>
-                    </button>
-                  ` : ''}
-                </div>
-              `;
-            }).join('')}
-          </div>
-
-          ${state.players.length === 0 ? `
-            <div class="text-center py-12 text-slate-400">
-              <p>No players yet. Add your first player to get started!</p>
-            </div>
-          ` : ''}
-        </div>
-      `;
-    }
-
-    function renderLive() {
-      if (state.user.role !== 'coach') {
-        return '<div class="text-center py-12 text-slate-400">Live tracking is coach-only.</div>';
-      }
-
-      // If no current game, show game selection/creation
-      if (!state.currentGame) {
-        const activeGame = state.games.find(g => !g.finished && g.half > 0);
-        const today = new Date().toISOString().split('T')[0];
-        const now = new Date().toTimeString().slice(0, 5);
-
-        return `
-          <div class="space-y-6">
-            <h1 class="text-2xl font-bold">Live Game</h1>
-
-            ${activeGame ? `
-              <div class="gradient-card rounded-xl p-6">
-                <div class="text-cyan-400 text-xs font-bold uppercase mb-2">Game in Progress</div>
-                <h2 class="text-xl font-bold mb-2">vs ${activeGame.opponent}</h2>
-                <p class="text-slate-400 mb-4">${formatDate(activeGame.date)} · ${activeGame.time}</p>
-                <button onclick="resumeGame('${activeGame.id}')" class="btn-primary px-6 py-2.5 rounded-lg font-semibold text-white">
-                  Resume Game
-                </button>
-              </div>
-            ` : ''}
-
-            <div class="glass rounded-xl p-6">
-              <h3 class="font-bold mb-4">Start New Game</h3>
-              <div class="grid md:grid-cols-2 gap-4 mb-4">
-                <input id="ng-opp" type="text" placeholder="Opponent" class="px-4 py-3 rounded-xl" />
-                <input id="ng-venue" type="text" placeholder="Venue" class="px-4 py-3 rounded-xl" />
-                <input id="ng-date" type="date" value="${today}" class="px-4 py-3 rounded-xl" />
-                <input id="ng-time" type="time" value="${now}" class="px-4 py-3 rounded-xl" />
-              </div>
-              <button onclick="startGame()" class="w-full btn-primary py-3 rounded-xl font-semibold text-white">
-                Start Game
-              </button>
-            </div>
-          </div>
-        `;
-      }
-
-      // Render active game
-      const game = state.currentGame;
-      const now = Date.now();
-      const halfActive = !!(game.half_started_at && !game.finished);
-      const elapsed = halfActive ? now - game.half_started_at : 0;
-      const halfLabel = game.finished ? 'Full Time' : game.half === 0 ? 'Pre-match' : `Half ${game.half} · ${formatTime(elapsed)}`;
-
-      // Half control buttons
-      let halfBtns = '';
-      if (!game.finished) {
-        if (game.half === 0) {
-          halfBtns = `<button onclick="startHalf()" class="flex-1 btn-primary py-3 rounded-xl font-semibold text-white">Start 1st Half</button>`;
-        } else if (game.half === 1) {
-          if (halfActive) {
-            halfBtns = `<button onclick="endHalf()" class="flex-1 bg-red-500 hover:bg-red-600 py-3 rounded-xl font-semibold text-white">End 1st Half</button>`;
-          } else {
-            halfBtns = `<button onclick="startHalf()" class="flex-1 btn-primary py-3 rounded-xl font-semibold text-white">Start 2nd Half</button>`;
-          }
-        } else if (game.half === 2) {
-          if (halfActive) {
-            halfBtns = `<button onclick="endHalf()" class="flex-1 bg-red-500 hover:bg-red-600 py-3 rounded-xl font-semibold text-white">End 2nd Half</button>`;
-          }
-        }
-
-        if (game.half >= 1) {
-          halfBtns += `<button onclick="fullTime()" class="flex-1 btn-secondary py-3 rounded-xl font-semibold">Full Time</button>`;
-        }
-      }
-
-      // Goal pills
-      const goalPills = (game.goals || []).map(g => {
-        const player = state.players.find(p => p.id === g.player_id);
-        return `<span class="px-3 py-1 bg-cyan-500/20 text-cyan-400 rounded-full text-sm font-medium">⚽ ${player?.name || g.player_name} ${g.minute}'</span>`;
-      }).join('');
-
-      // Player tracking cards
-      const trackerCards = state.players.map(p => {
-        const ms = getPlayerTime(game, p.id, now);
-        const isOn = !!(game.player_on_field?.[p.id]);
-        const pct = Math.min(100, Math.round(ms / 1500000 * 100)); // 25 min = 1500000ms
-        const barColor = pct > 85 ? 'bg-red-500' : pct > 60 ? 'bg-amber-500' : 'bg-green-500';
-
-        return `
-          <div onclick="togglePlayer('${p.id}')" class="glass rounded-xl p-4 cursor-pointer transition hover:bg-slate-800/50 ${isOn ? 'ring-2 ring-cyan-500' : ''}">
-            <div class="flex items-center gap-3 mb-3">
-              <div class="w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(p.id)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                ${p.photo ? `<img src="${p.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(p.name)}
-              </div>
-              <div class="flex-1 min-w-0">
-                <div class="font-semibold truncate">${p.name}</div>
-                <div class="text-xs ${isOn ? 'text-cyan-400' : 'text-slate-400'} font-medium">
-                  ${isOn ? 'On Field ●' : 'Bench'}
-                </div>
-              </div>
-              <div id="pt-${p.id}" class="text-lg font-bold font-mono">${formatTime(ms)}</div>
-            </div>
-            <div class="h-2 bg-slate-700 rounded-full overflow-hidden">
-              <div class="h-full ${barColor} transition-all duration-300" style="width: ${pct}%"></div>
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      return `
-        <div class="space-y-6">
-          <!-- Back button -->
-          <button onclick="exitGame()" class="flex items-center gap-2 text-slate-400 hover:text-white transition">
-            <i data-lucide="arrow-left" class="w-5 h-5"></i>
-            <span>Back to game selection</span>
-          </button>
-
-          <!-- Scoreboard -->
-          <div class="gradient-card rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-4 text-sm">
-              <div class="text-slate-400">${game.date} · ${game.time}${game.venue ? ' · ' + game.venue : ''}</div>
-              <div id="half-status" class="text-cyan-400 font-semibold">${halfLabel}</div>
-            </div>
-
-            <!-- Scores -->
-            <div class="flex items-center justify-center gap-8 mb-6">
-              <div class="flex-1 text-center">
-                <div class="text-xs text-slate-400 uppercase font-medium mb-2">${state.team.name}</div>
-                <div id="home-score" class="score-display mb-3">${game.home_score}</div>
-                <div class="flex gap-2 justify-center">
-                  <button onclick="adjScore('home', 1)" class="w-12 h-12 btn-primary rounded-xl text-2xl font-bold">+</button>
-                  <button onclick="adjScore('home', -1)" class="w-12 h-12 btn-secondary rounded-xl text-2xl font-bold">−</button>
-                </div>
-              </div>
-
-              <div class="text-4xl text-slate-600 font-bold">–</div>
-
-              <div class="flex-1 text-center">
-                <div class="text-xs text-slate-400 uppercase font-medium mb-2">${game.opponent}</div>
-                <div id="away-score" class="score-display mb-3">${game.away_score}</div>
-                <div class="flex gap-2 justify-center">
-                  <button onclick="adjScore('away', 1)" class="w-12 h-12 btn-primary rounded-xl text-2xl font-bold">+</button>
-                  <button onclick="adjScore('away', -1)" class="w-12 h-12 btn-secondary rounded-xl text-2xl font-bold">−</button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Goal scorers -->
-            ${goalPills ? `
-              <div class="flex flex-wrap gap-2 justify-center mb-4">
-                ${goalPills}
-              </div>
-            ` : ''}
-
-            <!-- Half controls -->
-            ${halfBtns ? `<div class="flex gap-3">${halfBtns}</div>` : ''}
-
-            <!-- Log goal button -->
-            ${!game.finished ? `
-              <button onclick="openGoalSheet()" class="w-full mt-4 glass py-3 rounded-xl font-semibold hover:bg-slate-700/50 transition">
-                ⚽ Log Goal
-              </button>
-            ` : ''}
-          </div>
-
-          <!-- Playtime Tracker -->
-          <div class="glass rounded-xl p-6">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold">Playtime Tracker</h3>
-              ${halfActive ? `
-                <span class="px-3 py-1 bg-green-500/20 text-green-400 rounded-full text-sm font-medium">
-                  Tap to sub in/out
-                </span>
-              ` : ''}
-            </div>
-
-            ${state.players.length > 0 ? `
-              <div class="grid md:grid-cols-2 gap-3">
-                ${trackerCards}
-              </div>
-            ` : `
-              <div class="text-center py-8 text-slate-400">
-                Add players in Roster first
-              </div>
-            `}
-          </div>
-
-          <!-- Film link -->
-          <div class="glass rounded-xl p-6">
-            <h3 class="font-bold mb-3">Game Film</h3>
-            <input
-              id="film-link"
-              type="url"
-              placeholder="Paste video URL"
-              value="${game.film_link || ''}"
-              oninput="updateFilmLink(this.value)"
-              class="w-full px-4 py-3 rounded-xl"
-            />
-          </div>
-        </div>
-
-        <!-- Goal Sheet Modal -->
-        <div id="goal-sheet" class="hidden fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
-          <div class="absolute inset-0 bg-black/50" onclick="closeGoalSheet()"></div>
-          <div class="relative glass rounded-2xl p-6 w-full max-w-md max-h-[80vh] overflow-y-auto slide-up">
-            <div class="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-4"></div>
-            <h3 class="text-xl font-bold mb-4">Who scored? ⚽</h3>
-            <div class="space-y-2">
-              ${state.players.map(p => `
-                <button onclick="logGoal('${p.id}', '${p.name.replace(/'/g, "\\'")}'); closeGoalSheet()" class="w-full glass rounded-xl p-4 flex items-center gap-3 hover:bg-slate-700/50 transition">
-                  <div class="w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(p.id)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                    ${p.photo ? `<img src="${p.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(p.name)}
-                  </div>
-                  <span class="font-semibold">${p.name}</span>
-                </button>
-              `).join('')}
-            </div>
-            <button onclick="closeGoalSheet()" class="w-full mt-4 btn-secondary py-3 rounded-xl font-medium">
-              Cancel
-            </button>
-          </div>
-        </div>
-      `;
-    }
-
-    function renderLineup() {
-      if (state.user.role !== 'coach') {
-        return '<div class="text-center py-12 text-slate-400">Lineup is coach-only.</div>';
-      }
-
-      const formations = state.team.formations || [];
-      const activeFormation = formations[state.team.active_formation || 0] || formations[0];
-      const lineup = state.team.lineup || {};
-
-      if (!activeFormation) {
-        return '<div class="text-center py-12 text-slate-400">No formations available</div>';
-      }
-
-      const assignedIds = Object.values(lineup).filter(Boolean).map(p => p.id);
-      const bench = state.players.filter(p => !assignedIds.includes(p.id));
-
-      return `
-        <div class="space-y-6">
-          <h1 class="text-2xl font-bold">Lineup</h1>
-
-          <!-- Formation selector -->
-          <div class="flex gap-2 overflow-x-auto pb-2">
-            ${formations.map((f, i) => `
-              <button
-                onclick="switchFormation(${i})"
-                class="px-4 py-2 rounded-lg font-medium whitespace-nowrap ${
-                  i === state.team.active_formation ? 'btn-primary text-white' : 'btn-secondary'
-                }"
-              >
-                ${f.name}
-              </button>
-            `).join('')}
-          </div>
-
-          <!-- Pitch -->
-          <div class="glass rounded-2xl p-6">
-            <div class="pitch rounded-xl relative" style="padding-bottom: 140%">
-              <!-- Field markings -->
-              <div class="absolute inset-0">
-                <div class="absolute left-[10%] right-[10%] top-1/2 h-px bg-white/20"></div>
-                <div class="absolute left-1/2 top-1/2 w-20 h-20 border border-white/20 rounded-full -translate-x-1/2 -translate-y-1/2"></div>
-                <div class="absolute left-[30%] right-[30%] top-[5%] h-[15%] border border-white/20"></div>
-                <div class="absolute left-[30%] right-[30%] bottom-[5%] h-[15%] border border-white/20"></div>
-              </div>
-
-              <!-- Position nodes -->
-              ${activeFormation.positions.map(pos => {
-                const player = lineup[pos.id];
-                return `
-                  <div
-                    class="absolute transform -translate-x-1/2 -translate-y-1/2 text-center"
-                    style="left: ${pos.x}%; top: ${pos.y}%"
-                  >
-                    <div class="w-14 h-14 rounded-full ${
-                      player
-                        ? 'bg-gradient-to-br ' + getAvatarColor(player.id) + ' ring-2 ring-white'
-                        : 'border-2 border-dashed border-white/50 bg-white/10'
-                    } flex items-center justify-center text-white font-bold text-sm mb-1">
-                      ${player ? (player.photo ? `<img src="${player.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(player.name)) : pos.label}
-                    </div>
-                    ${player ? `<div class="text-xs text-white font-semibold drop-shadow-lg">${player.name.split(' ')[0]}</div>` : ''}
-                  </div>
-                `;
-              }).join('')}
-            </div>
-          </div>
-
-          <!-- Bench -->
-          <div class="glass rounded-xl p-6">
-            <h3 class="font-bold mb-3">Bench</h3>
-            ${bench.length > 0 ? `
-              <div class="grid md:grid-cols-2 gap-2">
-                ${bench.map(p => `
-                  <div class="glass rounded-lg p-3 flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-full bg-gradient-to-br ${getAvatarColor(p.id)} flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                      ${p.photo ? `<img src="${p.photo}" class="w-full h-full rounded-full object-cover"/>` : getInitials(p.name)}
-                    </div>
-                    <span class="font-medium flex-1">${p.name}</span>
-                  </div>
-                `).join('')}
-              </div>
-            ` : '<p class="text-slate-400 text-sm">All players placed</p>'}
-            <p class="text-xs text-slate-500 mt-3">Full drag-and-drop lineup builder coming soon!</p>
-          </div>
-
-          <button onclick="saveLineup()" class="w-full btn-primary py-3 rounded-xl font-semibold text-white">
-            Save Lineup
-          </button>
-        </div>
-      `;
-    }
-
-    function renderSettings() {
-      if (state.user.role !== 'coach') {
-        return '<div class="text-center py-12 text-slate-400">Settings is coach-only.</div>';
-      }
-
-      return `
-        <div class="space-y-6 max-w-2xl">
-          <h1 class="text-2xl font-bold">Settings</h1>
-
-          <div class="glass rounded-xl p-6 space-y-4">
-            <div>
-              <label class="block text-sm font-medium text-slate-400 mb-2">Team Name</label>
-              <input id="s-name" type="text" value="${state.team.name}" class="w-full px-4 py-3 rounded-xl" />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-400 mb-2">
-                New Coach Password <span class="text-slate-500">(leave blank to keep)</span>
-              </label>
-              <input id="s-coach" type="password" placeholder="New password" class="w-full px-4 py-3 rounded-xl" />
-            </div>
-
-            <div>
-              <label class="block text-sm font-medium text-slate-400 mb-2">
-                New Player Password <span class="text-slate-500">(leave blank to keep)</span>
-              </label>
-              <input id="s-player" type="password" placeholder="New password" class="w-full px-4 py-3 rounded-xl" />
-            </div>
-
-            <div class="flex items-center gap-3 p-4 bg-slate-800/50 rounded-xl cursor-pointer" onclick="toggleLeaderboard()">
-              <div id="lb-check" class="w-6 h-6 rounded-md ${state.team.leaderboard_public ? 'bg-cyan-500' : 'bg-slate-700'} flex items-center justify-center transition">
-                ${state.team.leaderboard_public ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : ''}
-              </div>
-              <div class="flex-1">
-                <div class="font-medium">Make Leaderboard Public</div>
-                <div class="text-sm text-slate-400">Players can see the goal leaderboard</div>
-              </div>
-            </div>
-
-            <button onclick="saveSettings()" id="save-settings-btn" class="w-full btn-primary py-3 rounded-xl font-semibold text-white">
-              Save Settings
-            </button>
-          </div>
-
-          <button onclick="logout()" class="w-full glass hover:bg-red-500/20 border border-red-500/20 text-red-400 py-3 rounded-xl font-semibold transition">
-            Sign Out
-          </button>
-        </div>
-      `;
-    }
-
-    function switchFormation(index) {
-      state.team.active_formation = index;
-      render();
-    }
-
-    async function saveLineup() {
-      const btn = document.getElementById('save-lineup-btn');
-      if (btn) btn.disabled = true;
-
-      const { error } = await supabase
-        .from('teams')
-        .update({
-          lineup: state.team.lineup,
-          active_formation: state.team.active_formation
-        })
-        .eq('id', state.team.id);
-
-      if (error) {
-        alert('Error saving lineup: ' + error.message);
-      } else {
-        alert('Lineup saved!');
-      }
-
-      if (btn) btn.disabled = false;
-    }
-
-    function toggleLeaderboard() {
-      state.team.leaderboard_public = !state.team.leaderboard_public;
-      const check = document.getElementById('lb-check');
-      if (check) {
-        check.className = `w-6 h-6 rounded-md ${state.team.leaderboard_public ? 'bg-cyan-500' : 'bg-slate-700'} flex items-center justify-center transition`;
-        check.innerHTML = state.team.leaderboard_public ? '<i data-lucide="check" class="w-4 h-4 text-white"></i>' : '';
-        if (window.lucide) lucide.createIcons();
-      }
-    }
-
-    async function saveSettings() {
-      const name = document.getElementById('s-name').value.trim();
-      const coachPass = document.getElementById('s-coach').value;
-      const playerPass = document.getElementById('s-player').value;
-
-      const updates = {
-        leaderboard_public: state.team.leaderboard_public
-      };
-
-      if (name && name !== state.team.name) updates.name = name;
-      if (coachPass) updates.coach_pass = coachPass;
-      if (playerPass) updates.player_pass = playerPass;
-
-      const { error } = await supabase
-        .from('teams')
-        .update(updates)
-        .eq('id', state.team.id);
-
-      if (error) {
-        alert('Error saving settings: ' + error.message);
-      } else {
-        Object.assign(state.team, updates);
-        alert('Settings saved!');
-        document.getElementById('s-coach').value = '';
-        document.getElementById('s-player').value = '';
-      }
     }
 
     // Event handlers
-    function switchTab(tab) {
+    window.switchTab = function(tab) {
       const loginBtn = document.getElementById('tab-login');
       const createBtn = document.getElementById('tab-create');
       const loginForm = document.getElementById('login-form');
       const createForm = document.getElementById('create-form');
 
       if (tab === 'login') {
-        loginBtn.className = 'flex-1 py-2.5 rounded-lg font-medium transition btn-primary text-white';
-        createBtn.className = 'flex-1 py-2.5 rounded-lg font-medium transition text-slate-400';
+        loginBtn.classList.add('active');
+        createBtn.classList.remove('active');
         loginForm.classList.remove('hidden');
         createForm.classList.add('hidden');
       } else {
-        loginBtn.className = 'flex-1 py-2.5 rounded-lg font-medium transition text-slate-400';
-        createBtn.className = 'flex-1 py-2.5 rounded-lg font-medium transition btn-primary text-white';
+        loginBtn.classList.remove('active');
+        createBtn.classList.add('active');
         loginForm.classList.add('hidden');
         createForm.classList.remove('hidden');
       }
-    }
+    };
 
-    async function doLogin() {
+    window.doLogin = async function() {
       const team = document.getElementById('l-team').value.trim();
       const pass = document.getElementById('l-pass').value;
       const role = document.getElementById('l-role').value;
@@ -1116,9 +1037,9 @@
         errEl.textContent = error.message;
         errEl.classList.remove('hidden');
       }
-    }
+    };
 
-    async function doCreate() {
+    window.doCreate = async function() {
       const name = document.getElementById('c-name').value.trim();
       const coach = document.getElementById('c-coach').value;
       const player = document.getElementById('c-player').value;
@@ -1132,72 +1053,61 @@
 
       try {
         await handleCreateTeam(name, coach, player);
-        errEl.className = 'text-green-400 text-sm text-center';
+        errEl.className = 'success';
         errEl.textContent = 'Team created! Please sign in.';
         errEl.classList.remove('hidden');
         setTimeout(() => switchTab('login'), 1500);
       } catch (error) {
-        errEl.className = 'text-red-400 text-sm text-center';
+        errEl.className = 'error';
         errEl.textContent = error.message;
         errEl.classList.remove('hidden');
       }
-    }
+    };
 
-    function setView(view) {
+    window.setView = function(view) {
       state.view = view;
       render();
-    }
+    };
 
-    function logout() {
+    window.logout = function() {
       state = {
         user: null,
         team: null,
         players: [],
         games: [],
-        view: 'login',
-        currentGame: null,
-        tickInterval: null
+        view: 'login'
       };
       render();
-    }
+    };
 
-    function toggleMenu() {
-      const menu = document.getElementById('mobile-menu');
-      if (menu) {
-        menu.classList.toggle('hidden');
-      }
-    }
-
-    function showAddPlayer() {
+    window.showAddPlayer = function() {
       const form = document.getElementById('add-player-form');
-      if (form) {
-        form.classList.toggle('hidden');
-      }
-    }
+      form.classList.toggle('hidden');
+    };
 
-    let pendingPhoto = null;
-    function handlePhoto(input) {
-      const file = input.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        pendingPhoto = e.target.result;
-        document.getElementById('photo-label').textContent = 'Photo ✓';
-      };
-      reader.readAsDataURL(file);
-    }
-
-    async function addPlayer() {
+    window.addPlayer = async function() {
       const name = document.getElementById('np-name').value.trim();
       if (!name) return;
 
-      const { data, error } = await supabase
+      const photoInput = document.getElementById('np-photo');
+      let photoData = null;
+
+      // Convert photo to base64 if provided
+      if (photoInput.files && photoInput.files[0]) {
+        const file = photoInput.files[0];
+        photoData = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target.result);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      const { data, error } = await sb
         .from('players')
         .insert({
           team_id: state.team.id,
           name,
-          photo: pendingPhoto
+          photo: photoData
         })
         .select()
         .single();
@@ -1208,47 +1118,51 @@
       }
 
       state.players.push(data);
-      pendingPhoto = null;
       document.getElementById('np-name').value = '';
-      document.getElementById('photo-label').textContent = 'Add Photo';
+      document.getElementById('np-photo').value = '';
       render();
-    }
+    };
 
-    async function removePlayer(id) {
+    window.removePlayer = async function(id) {
       if (!confirm('Remove this player?')) return;
 
-      await supabase.from('players').delete().eq('id', id);
+      await sb.from('players').delete().eq('id', id);
       state.players = state.players.filter(p => p.id !== id);
       render();
-    }
+    };
 
-    async function startGame() {
-      const opponent = document.getElementById('ng-opp').value.trim();
-      const venue = document.getElementById('ng-venue').value.trim();
+    window.showAddGame = function() {
+      const form = document.getElementById('add-game-form');
+      form.classList.toggle('hidden');
+    };
+
+    window.createGame = async function() {
+      const opponent = document.getElementById('ng-opponent').value.trim();
       const date = document.getElementById('ng-date').value;
       const time = document.getElementById('ng-time').value;
+      const venue = document.getElementById('ng-venue').value.trim();
 
-      if (!opponent) {
-        alert('Please enter opponent name');
+      if (!opponent || !date || !time || !venue) {
+        alert('Please fill in all fields');
         return;
       }
 
-      const { data, error } = await supabase
+      const { data, error } = await sb
         .from('games')
         .insert({
           team_id: state.team.id,
           opponent,
-          venue: venue || '',
-          date: date || new Date().toISOString().split('T')[0],
-          time: time || new Date().toTimeString().slice(0, 5),
+          date,
+          time,
+          venue,
           home_score: 0,
           away_score: 0,
-          goals: [],
+          finished: false,
           half: 0,
           half_started_at: null,
           player_times: {},
           player_on_field: {},
-          finished: false,
+          goals: [],
           film_link: ''
         })
         .select()
@@ -1260,253 +1174,270 @@
       }
 
       state.games.push(data);
-      state.currentGame = data;
-      startLiveTicker();
+      document.getElementById('ng-opponent').value = '';
+      document.getElementById('ng-date').value = '';
+      document.getElementById('ng-time').value = '';
+      document.getElementById('ng-venue').value = '';
+      document.getElementById('add-game-form').classList.add('hidden');
       render();
-    }
+    };
 
-    function resumeGame(id) {
-      state.currentGame = state.games.find(g => g.id === id);
-      startLiveTicker();
+    // Live game functions
+    window.startGame = function(gameId) {
+      const game = state.games.find(g => g.id === gameId);
+      if (!game) return;
+
+      state.activeGame = game;
+      state.view = 'live';
       render();
-    }
+    };
 
-    function exitGame() {
-      state.currentGame = null;
-      stopLiveTicker();
+    window.endGame = async function() {
+      if (!confirm('End this game? This will mark it as finished.')) return;
+
+      // Stop timer
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+
+      // Update game as finished
+      const updates = {
+        finished: true,
+        half_started_at: null
+      };
+
+      await sb.from('games').update(updates).eq('id', state.activeGame.id);
+      Object.assign(state.activeGame, updates);
+
+      // Reload games
+      await loadData();
+      state.activeGame = null;
+      state.view = 'history';
       render();
-    }
+    };
 
-    function startLiveTicker() {
-      stopLiveTicker();
-      state.tickInterval = setInterval(() => {
-        if (state.currentGame && state.currentGame.half_started_at && !state.currentGame.finished) {
-          updateLiveTimers();
+    window.startHalf = async function(half) {
+      const now = Date.now();
+      const updates = {
+        half,
+        half_started_at: now
+      };
+
+      await sb.from('games').update(updates).eq('id', state.activeGame.id);
+      Object.assign(state.activeGame, updates);
+
+      // Start timer
+      startTimer();
+      render();
+    };
+
+    window.endHalf = async function() {
+      // Calculate and save player times
+      const game = state.activeGame;
+      const elapsed = Date.now() - game.half_started_at;
+
+      const updatedTimes = { ...game.player_times };
+      for (const [playerId, isOn] of Object.entries(game.player_on_field || {})) {
+        if (isOn) {
+          updatedTimes[playerId] = (updatedTimes[playerId] || 0) + elapsed;
+        }
+      }
+
+      const updates = {
+        half_started_at: null,
+        player_times: updatedTimes
+      };
+
+      await sb.from('games').update(updates).eq('id', state.activeGame.id);
+      Object.assign(state.activeGame, updates);
+
+      // Stop timer
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
+      }
+
+      render();
+    };
+
+    window.adjustScore = async function(delta) {
+      const game = state.activeGame;
+      const newScore = Math.max(0, game.home_score + delta);
+
+      await sb.from('games').update({ home_score: newScore }).eq('id', game.id);
+      game.home_score = newScore;
+      render();
+    };
+
+    window.showGoalScorer = function() {
+      document.getElementById('goal-scorer-modal').classList.remove('hidden');
+    };
+
+    window.hideGoalScorer = function() {
+      document.getElementById('goal-scorer-modal').classList.add('hidden');
+    };
+
+    window.addGoal = async function(playerId) {
+      const game = state.activeGame;
+      const elapsed = game.half_started_at ? Date.now() - game.half_started_at : 0;
+      const totalTime = Object.values(game.player_times || {}).reduce((a, b) => a + b, 0) + elapsed;
+      const minute = Math.floor(totalTime / 60000);
+
+      const goals = [...(game.goals || []), { player_id: playerId, minute }];
+      const newScore = game.home_score + 1;
+
+      await sb.from('games').update({ home_score: newScore, goals }).eq('id', game.id);
+      game.home_score = newScore;
+      game.goals = goals;
+
+      hideGoalScorer();
+      render();
+    };
+
+    window.togglePlayer = async function(playerId) {
+      const game = state.activeGame;
+      if (!game.half_started_at) return;
+
+      const isCurrentlyOn = game.player_on_field?.[playerId] || false;
+      const updatedOnField = { ...game.player_on_field, [playerId]: !isCurrentlyOn };
+
+      await sb.from('games').update({ player_on_field: updatedOnField }).eq('id', game.id);
+      game.player_on_field = updatedOnField;
+
+      render();
+    };
+
+    window.updateFilmLink = async function(link) {
+      await sb.from('games').update({ film_link: link }).eq('id', state.activeGame.id);
+      state.activeGame.film_link = link;
+    };
+
+    window.removeGoal = async function(index) {
+      const game = state.activeGame;
+      const goals = [...game.goals];
+      goals.splice(index, 1);
+
+      const newScore = Math.max(0, game.home_score - 1);
+      await sb.from('games').update({ goals, home_score: newScore }).eq('id', game.id);
+      game.goals = goals;
+      game.home_score = newScore;
+
+      render();
+    };
+
+    function startTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+      }
+
+      state.timerInterval = setInterval(() => {
+        if (!state.activeGame || !state.activeGame.half_started_at) {
+          clearInterval(state.timerInterval);
+          state.timerInterval = null;
+          return;
+        }
+
+        // Update all player timers
+        const game = state.activeGame;
+        const elapsed = Date.now() - game.half_started_at;
+
+        for (const player of state.players) {
+          const isOnField = game.player_on_field?.[player.id] || false;
+          const totalTime = game.player_times?.[player.id] || 0;
+          const currentTime = isOnField ? elapsed : 0;
+          const displayTime = totalTime + currentTime;
+
+          const timerEl = document.getElementById(`timer-${player.id}`);
+          if (timerEl) {
+            timerEl.textContent = formatTime(displayTime);
+          }
         }
       }, 1000);
     }
 
-    function stopLiveTicker() {
-      if (state.tickInterval) {
-        clearInterval(state.tickInterval);
-        state.tickInterval = null;
-      }
-    }
+    // Lineup functions
+    let selectedPosition = null;
 
-    function updateLiveTimers() {
-      const game = state.currentGame;
-      if (!game || !game.half_started_at) return;
-
-      const now = Date.now();
-      const elapsed = now - game.half_started_at;
-
-      // Update half status
-      const statusEl = document.getElementById('half-status');
-      if (statusEl) {
-        statusEl.textContent = `Half ${game.half} · ${formatTime(elapsed)}`;
-      }
-
-      // Update player times
-      state.players.forEach(p => {
-        const ms = getPlayerTime(game, p.id, now);
-        const timeEl = document.getElementById(`pt-${p.id}`);
-        if (timeEl) {
-          timeEl.textContent = formatTime(ms);
-        }
-      });
-    }
-
-    function getPlayerTime(game, playerId, now) {
-      let ms = game.player_times?.[playerId] || 0;
-      if (game.player_on_field?.[playerId] && game.half_started_at) {
-        ms += now - game.player_on_field[playerId];
-      }
-      return ms;
-    }
-
-    async function updateGame(updates) {
-      const game = state.currentGame;
-      if (!game) return;
-
-      Object.assign(game, updates);
-
-      const { error } = await supabase
-        .from('games')
-        .update(updates)
-        .eq('id', game.id);
-
-      if (error) {
-        console.error('Error updating game:', error);
-      }
-
-      // Update in games array
-      const idx = state.games.findIndex(g => g.id === game.id);
-      if (idx !== -1) {
-        state.games[idx] = game;
-      }
-    }
-
-    async function adjScore(side, delta) {
-      const game = state.currentGame;
-      if (!game) return;
-
-      const key = side === 'home' ? 'home_score' : 'away_score';
-      const newScore = Math.max(0, (game[key] || 0) + delta);
-
-      await updateGame({ [key]: newScore });
-
-      const scoreEl = document.getElementById(`${side}-score`);
-      if (scoreEl) {
-        scoreEl.textContent = newScore;
-      }
-    }
-
-    async function startHalf() {
-      const game = state.currentGame;
-      if (!game) return;
-
-      const newHalf = game.half + 1;
-      const now = Date.now();
-
-      await updateGame({
-        half: newHalf,
-        half_started_at: now
-      });
-
+    window.changeFormation = async function(index) {
+      await sb.from('teams').update({ active_formation: parseInt(index) }).eq('id', state.team.id);
+      state.team.active_formation = parseInt(index);
       render();
-    }
+    };
 
-    async function endHalf() {
-      const game = state.currentGame;
-      if (!game) return;
+    window.assignPosition = function(posId) {
+      selectedPosition = posId;
+      const formations = state.team.formations || [];
+      const activeFormation = formations[state.team.active_formation || 0];
+      const pos = activeFormation.positions.find(p => p.id === posId);
 
-      const now = Date.now();
+      document.getElementById('pos-label').textContent = pos.label;
+      document.getElementById('assign-player').classList.remove('hidden');
 
-      // Calculate accumulated times
-      const playerTimes = { ...(game.player_times || {}) };
-      const playerOnField = { ...(game.player_on_field || {}) };
+      // Set current player if assigned
+      const currentPlayer = state.team.lineup?.[posId];
+      if (currentPlayer) {
+        document.getElementById('player-select').value = currentPlayer;
+      }
+    };
 
-      Object.keys(playerOnField).forEach(pid => {
-        if (playerOnField[pid]) {
-          playerTimes[pid] = (playerTimes[pid] || 0) + (now - playerOnField[pid]);
-          playerOnField[pid] = null;
-        }
-      });
+    window.savePosition = async function() {
+      const playerId = document.getElementById('player-select').value;
+      const updatedLineup = { ...state.team.lineup };
 
-      await updateGame({
-        half_started_at: null,
-        player_times: playerTimes,
-        player_on_field: playerOnField
-      });
-
-      render();
-    }
-
-    async function fullTime() {
-      const game = state.currentGame;
-      if (!game) return;
-
-      const now = Date.now();
-
-      // Calculate final times
-      const playerTimes = { ...(game.player_times || {}) };
-      const playerOnField = { ...(game.player_on_field || {}) };
-
-      Object.keys(playerOnField).forEach(pid => {
-        if (playerOnField[pid]) {
-          playerTimes[pid] = (playerTimes[pid] || 0) + (now - playerOnField[pid]);
-          playerOnField[pid] = null;
-        }
-      });
-
-      await updateGame({
-        finished: true,
-        half_started_at: null,
-        player_times: playerTimes,
-        player_on_field: playerOnField
-      });
-
-      stopLiveTicker();
-      render();
-    }
-
-    async function togglePlayer(playerId) {
-      const game = state.currentGame;
-      if (!game || !game.half_started_at || game.finished) return;
-
-      const now = Date.now();
-      const playerTimes = { ...(game.player_times || {}) };
-      const playerOnField = { ...(game.player_on_field || {}) };
-
-      if (playerOnField[playerId]) {
-        // Sub out
-        playerTimes[playerId] = (playerTimes[playerId] || 0) + (now - playerOnField[playerId]);
-        playerOnField[playerId] = null;
+      if (playerId) {
+        updatedLineup[selectedPosition] = playerId;
       } else {
-        // Sub in
-        playerOnField[playerId] = now;
+        delete updatedLineup[selectedPosition];
       }
 
-      await updateGame({
-        player_times: playerTimes,
-        player_on_field: playerOnField
-      });
+      await sb.from('teams').update({ lineup: updatedLineup }).eq('id', state.team.id);
+      state.team.lineup = updatedLineup;
 
+      document.getElementById('assign-player').classList.add('hidden');
+      selectedPosition = null;
       render();
-    }
+    };
 
-    function openGoalSheet() {
-      const sheet = document.getElementById('goal-sheet');
-      if (sheet) {
-        sheet.classList.remove('hidden');
-      }
-    }
+    // Settings functions
+    window.toggleLeaderboard = async function(checked) {
+      await sb.from('teams').update({ leaderboard_public: checked }).eq('id', state.team.id);
+      state.team.leaderboard_public = checked;
+    };
 
-    function closeGoalSheet() {
-      const sheet = document.getElementById('goal-sheet');
-      if (sheet) {
-        sheet.classList.add('hidden');
-      }
-    }
+    window.updatePasswords = async function() {
+      const coachPass = document.getElementById('new-coach-pass').value;
+      const playerPass = document.getElementById('new-player-pass').value;
 
-    async function logGoal(playerId, playerName) {
-      const game = state.currentGame;
-      if (!game) return;
-
-      const now = Date.now();
-      let minute = 1;
-
-      if (game.half_started_at) {
-        const elapsed = now - game.half_started_at;
-        minute = Math.floor(elapsed / 60000) + 1;
-        if (game.half > 1) minute += 25; // Add 25 for second half
+      if (!coachPass) {
+        alert('Coach password is required');
+        return;
       }
 
-      const goals = [...(game.goals || []), {
-        player_id: playerId,
-        player_name: playerName,
-        minute,
-        half: game.half || 1
-      }];
+      const updates = { coach_pass: coachPass };
+      if (playerPass) {
+        updates.player_pass = playerPass;
+      }
 
-      await updateGame({
-        goals,
-        home_score: game.home_score + 1
-      });
+      await sb.from('teams').update(updates).eq('id', state.team.id);
+      Object.assign(state.team, updates);
 
-      render();
-    }
+      alert('Passwords updated successfully');
+      document.getElementById('new-coach-pass').value = '';
+      document.getElementById('new-player-pass').value = '';
+    };
 
-    let filmLinkTimeout;
-    function updateFilmLink(value) {
-      clearTimeout(filmLinkTimeout);
-      filmLinkTimeout = setTimeout(() => {
-        updateGame({ film_link: value });
-      }, 800);
-    }
+    window.deleteTeam = async function() {
+      if (!confirm('Are you sure you want to delete this team? This cannot be undone.')) return;
+      if (!confirm('This will permanently delete all players, games, and data. Continue?')) return;
+
+      await sb.from('teams').delete().eq('id', state.team.id);
+      logout();
+    };
 
     // Main render
     function render() {
+      console.log('Rendering, state.view:', state.view);
       const app = document.getElementById('app');
 
       if (!state.user || !state.team) {
@@ -1514,14 +1445,10 @@
       } else {
         app.innerHTML = renderApp();
       }
-
-      // Initialize Lucide icons
-      if (window.lucide) {
-        lucide.createIcons();
-      }
     }
 
-    // Initialize on load
+    // Initialize
+    console.log('Initializing app...');
     render();
   </script>
 </body>
