@@ -542,6 +542,12 @@
       const draws = finished.filter(g => g.home_score === g.away_score).length;
       const totalGoals = state.games.reduce((sum, g) => sum + (g.goals?.length || 0), 0);
 
+      // Calculate leaderboard
+      const playerStats = state.players.map(p => {
+        const stats = calculatePlayerStats(p.id);
+        return { ...p, ...stats };
+      }).sort((a, b) => b.goals - a.goals || b.playtime - a.playtime);
+
       return `
         <div class="container">
           <h1>Dashboard</h1>
@@ -566,8 +572,41 @@
           </div>
 
           <div class="card">
-            <p style="color: #94a3b8;">Welcome to ${state.team.name}!</p>
-            <p style="margin-top: 0.5rem; color: #94a3b8;">Full features coming soon...</p>
+            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Leaderboard</h2>
+            ${playerStats.length > 0 ? `
+              <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                ${playerStats.map((p, idx) => `
+                  <div style="display: flex; align-items: center; gap: 1rem; padding: 1rem;
+                    background: ${idx === 0 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(30, 41, 59, 0.4)'};
+                    border-radius: 0.5rem; border-left: 4px solid ${
+                      idx === 0 ? '#fbbf24' : idx === 1 ? '#9ca3af' : idx === 2 ? '#cd7f32' : 'transparent'
+                    };">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #94a3b8; min-width: 2rem;">
+                      ${idx + 1}
+                    </div>
+                    ${p.photo ? `
+                      <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                    ` : `
+                      <div class="avatar">${getInitials(p.name)}</div>
+                    `}
+                    <div style="flex: 1;">
+                      <div style="font-weight: 700; font-size: 1.125rem;">${p.name}</div>
+                      <div style="font-size: 0.875rem; color: #94a3b8;">
+                        ${formatTime(p.playtime)} played
+                      </div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="font-size: 2rem; font-weight: 700; color: #06b6d4;">${p.goals}</div>
+                      <div style="font-size: 0.75rem; color: #94a3b8;">GOALS</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            ` : `
+              <p style="color: #94a3b8; text-align: center; padding: 2rem;">
+                No player stats yet. Start tracking games to see the leaderboard!
+              </p>
+            `}
           </div>
         </div>
       `;
@@ -841,10 +880,60 @@
       const game = state.activeGame;
       const halfRunning = game.half_started_at !== null;
 
+      // Show starting lineup selector if game hasn't started
+      if (game.half === 0 && !state.startingLineupSelected) {
+        return `
+          <div class="container">
+            <div class="card">
+              <h1 style="margin-bottom: 1rem;">${state.team.name} vs ${game.opponent}</h1>
+              <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Select Starting Lineup</h2>
+              <p style="color: #94a3b8; margin-bottom: 1.5rem;">Choose which players will start on the field</p>
+
+              <div style="display: grid; gap: 0.75rem;">
+                ${state.players.map(p => {
+                  const isSelected = state.tempStarting?.includes(p.id);
+                  return `
+                    <div onclick="toggleStarting('${p.id}')" class="player-card"
+                      style="cursor: pointer; background: ${isSelected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(30, 41, 59, 0.6)'};
+                      border: 2px solid ${isSelected ? '#10b981' : 'transparent'};">
+                      ${p.photo ? `
+                        <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                      ` : `
+                        <div class="avatar">${getInitials(p.name)}</div>
+                      `}
+                      <div style="flex: 1;">
+                        <div style="font-weight: 600;">${p.name}</div>
+                        <div style="font-size: 0.875rem; color: ${isSelected ? '#10b981' : '#94a3b8'};">
+                          ${isSelected ? '✓ Starting' : 'Tap to add'}
+                        </div>
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+
+              <button onclick="confirmStarting()" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
+                Continue (${state.tempStarting?.length || 0} players selected)
+              </button>
+            </div>
+          </div>
+        `;
+      }
+
+      // Calculate game time
+      const allPlayerTimes = Object.values(game.player_times || {});
+      const avgTime = allPlayerTimes.length > 0
+        ? allPlayerTimes.reduce((a, b) => a + b, 0) / allPlayerTimes.length
+        : 0;
+      const currentElapsed = halfRunning ? Date.now() - game.half_started_at : 0;
+      const gameTime = avgTime + currentElapsed;
+
+      const onFieldCount = Object.values(game.player_on_field || {}).filter(Boolean).length;
+
       return `
         <div class="container">
           <div class="card" style="margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
               <div>
                 <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.25rem;">
                   ${formatDate(game.date)} · ${game.time}
@@ -856,31 +945,38 @@
 
             <div style="text-align: center; margin: 2rem 0;">
               <div class="score-display" id="score-display">${game.home_score} – ${game.away_score}</div>
+              <div style="font-size: 1.25rem; color: #94a3b8; margin-top: 0.5rem;" id="game-timer">
+                Game Time: ${formatTime(gameTime)}
+              </div>
               <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
                 <button onclick="adjustScore(-1)" class="btn btn-secondary">–</button>
-                <button onclick="showGoalScorer()" class="btn btn-primary">+ Goal</button>
+                <button onclick="showGoalScorer()" class="btn btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;">+ GOAL</button>
               </div>
             </div>
 
             <div id="goal-scorer-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-              background: rgba(0, 0, 0, 0.8); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-              <div class="card" style="max-width: 400px; width: 90%; max-height: 80vh; overflow-y: auto;">
-                <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Who scored?</h2>
-                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+              background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
+              <div class="card" style="max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                <h2 style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">⚽ GOAL!</h2>
+                <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Who scored?</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
                   ${state.players.map(p => `
-                    <button onclick="addGoal('${p.id}')" class="btn btn-secondary" style="text-align: left; padding: 1rem;">
+                    <button onclick="addGoal('${p.id}')" class="btn btn-secondary"
+                      style="text-align: left; padding: 1.5rem; height: auto; transition: all 0.2s;"
+                      onmouseover="this.style.transform='scale(1.02)'; this.style.background='rgba(6, 182, 212, 0.2)'"
+                      onmouseout="this.style.transform='scale(1)'; this.style.background='rgba(148, 163, 184, 0.1)'">
                       <div style="display: flex; align-items: center; gap: 1rem;">
                         ${p.photo ? `
-                          <img src="${p.photo}" alt="${p.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
+                          <img src="${p.photo}" alt="${p.name}" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover;" />
                         ` : `
-                          <div class="avatar" style="width: 40px; height: 40px; font-size: 1rem;">${getInitials(p.name)}</div>
+                          <div class="avatar" style="width: 64px; height: 64px; font-size: 1.5rem;">${getInitials(p.name)}</div>
                         `}
-                        <span style="font-weight: 600;">${p.name}</span>
+                        <span style="font-weight: 700; font-size: 1.25rem;">${p.name}</span>
                       </div>
                     </button>
                   `).join('')}
                 </div>
-                <button onclick="hideGoalScorer()" class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Cancel</button>
+                <button onclick="hideGoalScorer()" class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1rem;">Cancel</button>
               </div>
             </div>
 
@@ -916,35 +1012,79 @@
           </div>
 
           <div class="card">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Players on Field</h2>
-            <div id="players-list">
-              ${state.players.map(p => {
-                const isOnField = game.player_on_field?.[p.id] || false;
-                const totalTime = game.player_times?.[p.id] || 0;
-                const currentTime = isOnField && halfRunning ? Date.now() - game.half_started_at : 0;
-                const displayTime = totalTime + currentTime;
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h2 style="font-size: 1.25rem; margin: 0;">Players</h2>
+              <div style="font-size: 0.875rem; color: #94a3b8;">
+                <span style="color: #10b981; font-weight: 600;">${onFieldCount} on field</span> ·
+                ${state.players.length - onFieldCount} bench
+              </div>
+            </div>
 
-                return `
-                  <div class="player-card" style="background: ${isOnField ? 'rgba(16, 185, 129, 0.1)' : 'rgba(30, 41, 59, 0.6)'};">
-                    ${p.photo ? `
-                      <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
-                    ` : `
-                      <div class="avatar">${getInitials(p.name)}</div>
-                    `}
-                    <div style="flex: 1;">
-                      <div style="font-weight: 600;">${p.name}</div>
-                      <div style="font-size: 0.875rem; color: #94a3b8;" id="timer-${p.id}">
-                        ${formatTime(displayTime)}
+            <div style="margin-bottom: 1rem;">
+              <h3 style="font-size: 0.875rem; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+                ON FIELD
+              </h3>
+              <div id="players-on-field" style="display: grid; gap: 0.5rem;">
+                ${state.players.filter(p => game.player_on_field?.[p.id]).map(p => {
+                  const totalTime = game.player_times?.[p.id] || 0;
+                  const currentTime = halfRunning ? Date.now() - game.half_started_at : 0;
+                  const displayTime = totalTime + currentTime;
+
+                  return `
+                    <div class="player-card" style="background: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981;">
+                      ${p.photo ? `
+                        <img src="${p.photo}" alt="${p.name}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;" />
+                      ` : `
+                        <div class="avatar" style="width: 56px; height: 56px; font-size: 1.25rem;">${getInitials(p.name)}</div>
+                      `}
+                      <div style="flex: 1;">
+                        <div style="font-weight: 700; font-size: 1.125rem;">${p.name}</div>
+                        <div style="font-size: 1rem; color: #10b981; font-weight: 600;" id="timer-${p.id}">
+                          ${formatTime(displayTime)}
+                        </div>
                       </div>
+                      <button onclick="togglePlayer('${p.id}')" class="btn btn-secondary"
+                        style="padding: 0.75rem 1.25rem; font-size: 1rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                        ${!halfRunning ? 'disabled' : ''}>
+                        Sub Out
+                      </button>
                     </div>
-                    <button onclick="togglePlayer('${p.id}')" class="btn ${isOnField ? 'btn-secondary' : 'btn-primary'}"
-                      style="padding: 0.5rem 1rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
-                      ${!halfRunning ? 'disabled' : ''}>
-                      ${isOnField ? 'Sub Out' : 'Sub In'}
-                    </button>
-                  </div>
-                `;
-              }).join('')}
+                  `;
+                }).join('') || '<div style="color: #94a3b8; text-align: center; padding: 1rem;">No players on field</div>'}
+              </div>
+            </div>
+
+            <div>
+              <h3 style="font-size: 0.875rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
+                BENCH
+              </h3>
+              <div id="players-bench" style="display: grid; gap: 0.5rem;">
+                ${state.players.filter(p => !game.player_on_field?.[p.id]).map(p => {
+                  const totalTime = game.player_times?.[p.id] || 0;
+                  const displayTime = totalTime;
+
+                  return `
+                    <div class="player-card" style="background: rgba(30, 41, 59, 0.4);">
+                      ${p.photo ? `
+                        <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
+                      ` : `
+                        <div class="avatar">${getInitials(p.name)}</div>
+                      `}
+                      <div style="flex: 1;">
+                        <div style="font-weight: 600;">${p.name}</div>
+                        <div style="font-size: 0.875rem; color: #94a3b8;" id="timer-${p.id}">
+                          ${formatTime(displayTime)}
+                        </div>
+                      </div>
+                      <button onclick="togglePlayer('${p.id}')" class="btn btn-primary"
+                        style="padding: 0.75rem 1.25rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                        ${!halfRunning ? 'disabled' : ''}>
+                        Sub In
+                      </button>
+                    </div>
+                  `;
+                }).join('') || '<div style="color: #94a3b8; text-align: center; padding: 1rem;">All players on field</div>'}
+              </div>
             </div>
           </div>
 
@@ -1188,7 +1328,39 @@
       if (!game) return;
 
       state.activeGame = game;
+      state.startingLineupSelected = false;
+      state.tempStarting = [];
       state.view = 'live';
+      render();
+    };
+
+    window.toggleStarting = function(playerId) {
+      if (!state.tempStarting) state.tempStarting = [];
+
+      const index = state.tempStarting.indexOf(playerId);
+      if (index > -1) {
+        state.tempStarting.splice(index, 1);
+      } else {
+        state.tempStarting.push(playerId);
+      }
+      render();
+    };
+
+    window.confirmStarting = async function() {
+      if (!state.tempStarting || state.tempStarting.length === 0) {
+        alert('Please select at least one player');
+        return;
+      }
+
+      const playerOnField = {};
+      state.tempStarting.forEach(id => {
+        playerOnField[id] = true;
+      });
+
+      await sb.from('games').update({ player_on_field: playerOnField }).eq('id', state.activeGame.id);
+      state.activeGame.player_on_field = playerOnField;
+      state.startingLineupSelected = true;
+      state.tempStarting = [];
       render();
     };
 
@@ -1352,6 +1524,18 @@
           if (timerEl) {
             timerEl.textContent = formatTime(displayTime);
           }
+        }
+
+        // Update game timer
+        const allPlayerTimes = Object.values(game.player_times || {});
+        const avgTime = allPlayerTimes.length > 0
+          ? allPlayerTimes.reduce((a, b) => a + b, 0) / allPlayerTimes.length
+          : 0;
+        const gameTime = avgTime + elapsed;
+
+        const gameTimerEl = document.getElementById('game-timer');
+        if (gameTimerEl) {
+          gameTimerEl.textContent = `Game Time: ${formatTime(gameTime)}`;
         }
       }, 1000);
     }
