@@ -15,9 +15,11 @@ input:focus,select:focus,textarea:focus{border-color:#16a34a;box-shadow:0 0 0 3p
 button{cursor:pointer;font-size:14px;}
 :root{--g:#16a34a;--gl:#dcfce7;--gd:#14532d;--red:#dc2626;--redl:#fee2e2;--dark:#0f172a;--muted:#64748b;--border:#e2e8f0;--border2:#cbd5e1;}
 .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:1.25rem;}
-.gbtn{background:var(--g);color:#fff;border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:600;transition:opacity 0.15s;}
+.gbtn{background:var(--g);color:#fff;border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:600;transition:opacity 0.15s,transform 0.1s;min-height:48px;}
+.gbtn:active:not(:disabled){transform:scale(0.98);opacity:0.9;}
 .gbtn:disabled{opacity:0.6;cursor:default;}
-.dbtn{background:#f1f5f9;color:var(--dark);border:1px solid var(--border);border-radius:12px;padding:11px 18px;font-size:14px;font-weight:500;}
+.dbtn{background:#f1f5f9;color:var(--dark);border:1px solid var(--border);border-radius:12px;padding:11px 18px;font-size:14px;font-weight:500;min-height:48px;transition:background 0.15s,transform 0.1s;}
+.dbtn:active{background:#e2e8f0;transform:scale(0.98);}
 .sec{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:10px;}
 #app{min-height:100vh;}
 /* Topbar */
@@ -39,10 +41,12 @@ button{cursor:pointer;font-size:14px;}
 .bn-btn.active{color:#4ade80;font-weight:600;}
 .bn-btn i{font-size:21px;}
 /* Drawer */
-#drawer-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:25;}
-#drawer{position:absolute;bottom:64px;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:1rem;}
+#drawer-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:25;transition:opacity 0.2s;}
+#drawer{position:absolute;bottom:64px;left:0;right:0;background:#fff;border-radius:20px 20px 0 0;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom));transition:transform 0.25s ease-out;transform:translateY(0);}
+#drawer-bg.closing #drawer{transform:translateY(100%);}
 .drawer-handle{width:36px;height:4px;border-radius:2px;background:var(--border2);margin:0 auto 14px;}
-.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:14px 8px;background:transparent;border:none;border-bottom:1px solid var(--border);font-size:16px;color:var(--dark);text-align:left;}
+.drawer-item{width:100%;display:flex;align-items:center;gap:14px;padding:14px 8px;background:transparent;border:none;border-bottom:1px solid var(--border);font-size:16px;color:var(--dark);text-align:left;min-height:56px;transition:background 0.15s;}
+.drawer-item:active{background:#f8fafc;}
 .drawer-item i{font-size:22px;color:var(--muted);}
 .drawer-item.danger{color:var(--red);border-bottom:none;margin-top:4px;}
 .drawer-item.danger i{color:var(--red);}
@@ -88,20 +92,27 @@ button{cursor:pointer;font-size:14px;}
 /* Scoreboard */
 .scoreboard{border-radius:20px;padding:1.5rem;color:#fff;margin-bottom:14px;}
 .score-num{font-size:72px;font-weight:800;color:#fff;line-height:1;}
-.score-ctrl{background:rgba(255,255,255,0.15);border:none;color:#fff;width:48px;height:48px;border-radius:12px;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:opacity 0.15s;}
+.score-ctrl{background:rgba(255,255,255,0.15);border:none;color:#fff;width:48px;height:48px;border-radius:12px;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;transition:all 0.15s;user-select:none;}
 .score-ctrl:hover{opacity:0.8;}
+.score-ctrl:active{transform:scale(0.92);opacity:0.7;}
 .score-ctrl.minus{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);}
-.half-btn{flex:1;border:none;border-radius:12px;color:#fff;padding:13px;font-size:15px;font-weight:600;min-height:48px;}
+.half-btn{flex:1;border:none;border-radius:12px;color:#fff;padding:13px;font-size:15px;font-weight:600;min-height:48px;transition:all 0.15s;user-select:none;}
+.half-btn:active{transform:scale(0.97);}
 .half-btn.start{background:var(--g);}
+.half-btn.start:active{background:#15803d;}
 .half-btn.end{background:var(--red);}
+.half-btn.end:active{background:#b91c1c;}
 .half-btn.ft{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.75);}
+.half-btn.ft:active{background:rgba(255,255,255,0.15);}
 .goal-pill{font-size:12px;background:rgba(255,255,255,0.12);color:rgba(255,255,255,0.85);padding:4px 11px;border-radius:20px;}
 .log-goal-btn{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:12px;color:#fff;padding:12px;font-size:15px;font-weight:500;width:100%;margin-top:12px;}
 .log-goal-btn:hover{background:rgba(255,255,255,0.18);}
 /* Player tracker cards */
 .tracker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;}
-.tracker-card{border:1px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;background:#fff;transition:all 0.18s;}
-.tracker-card.on{border:2px solid var(--g);background:var(--gl);}
+.tracker-card{border:1px solid var(--border);border-radius:14px;padding:12px 14px;cursor:pointer;background:#fff;transition:all 0.18s;user-select:none;}
+.tracker-card:active{transform:scale(0.98);}
+.tracker-card.on{border:2px solid var(--g);background:var(--gl);box-shadow:0 2px 8px rgba(22,163,74,0.12);}
+.tracker-card.on:active{background:#d1fae5;}
 .tracker-bar-bg{height:5px;border-radius:4px;margin-top:8px;}
 .tracker-bar{height:5px;border-radius:4px;transition:width 1s linear;}
 /* Avatar */
@@ -111,10 +122,11 @@ button{cursor:pointer;font-size:14px;}
 .roster-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;}
 .roster-card{background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:14px;min-height:72px;}
 /* Goal sheet */
-#goal-sheet-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:50;align-items:flex-end;justify-content:center;}
-#goal-sheet{background:#fff;border-radius:22px 22px 0 0;padding:1.5rem;width:100%;max-width:600px;max-height:75vh;overflow-y:auto;}
-.goal-player-btn{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#f8fafc;border:1px solid var(--border);border-radius:14px;width:100%;text-align:left;margin-bottom:8px;transition:background 0.15s;}
+#goal-sheet-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:50;align-items:flex-end;justify-content:center;transition:opacity 0.2s;}
+#goal-sheet{background:#fff;border-radius:22px 22px 0 0;padding:1.5rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));width:100%;max-width:600px;max-height:75vh;overflow-y:auto;-webkit-overflow-scrolling:touch;transition:transform 0.3s ease-out;}
+.goal-player-btn{display:flex;align-items:center;gap:14px;padding:14px 16px;background:#f8fafc;border:1px solid var(--border);border-radius:14px;width:100%;text-align:left;margin-bottom:8px;transition:all 0.15s;min-height:60px;user-select:none;}
 .goal-player-btn:hover{background:var(--gl);border-color:var(--g);}
+.goal-player-btn:active{background:var(--gl);border-color:var(--g);transform:scale(0.98);}
 /* Pitch */
 .pitch{background:#2d7a3c;border-radius:20px;overflow:visible;position:relative;}
 .pitch-line{position:absolute;background:rgba(255,255,255,0.25);}
@@ -134,6 +146,8 @@ button{cursor:pointer;font-size:14px;}
 @media(min-width:768px){
   #bottomnav{display:none;}
   #content{padding-bottom:2rem;}
+  .score-num{font-size:72px;}
+  #drawer-bg{display:none!important;}
 }
 @media(max-width:767px){
   #desk-nav .dn-btn span{display:none;}
@@ -141,6 +155,33 @@ button{cursor:pointer;font-size:14px;}
   #topbar{display:none;}
   .tracker-grid{grid-template-columns:1fr 1fr;}
   .roster-grid{grid-template-columns:1fr;}
+  .score-num{font-size:56px;}
+  .stat-grid{grid-template-columns:1fr 1fr;}
+  .hero-title{font-size:20px;}
+  .login-logo{width:64px;height:64px;font-size:32px;}
+  .login-title{font-size:24px;}
+}
+@media(max-width:640px){
+  .stat-grid{gap:10px;}
+  .stat-pill{padding:0.875rem 1rem;}
+  .stat-val{font-size:22px;}
+  #content{padding:1rem 0.875rem 5rem;}
+  .card{padding:1rem;}
+  .hero{padding:1.25rem;}
+  .scoreboard{padding:1.25rem;}
+}
+/* Better lineup on mobile */
+@media(max-width:767px){
+  .pitch{padding-bottom:140%!important;}
+}
+/* Lineup responsive layout */
+@media(max-width:900px){
+  div[style*="grid-template-columns:minmax(0,1fr) 200px"]{
+    grid-template-columns:1fr!important;
+  }
+  div[style*="grid-template-columns:minmax(0,1fr) 200px"] > div:last-child{
+    order:-1;
+  }
 }
 </style>
 </head>
@@ -178,7 +219,7 @@ const SPIDERZ_GAMES = [
   {opponent:"Arlington United",date:"2026-04-09",time:"18:15",venue:"HP 11 East",home_score:1,away_score:5,goals:[],half:2,half_started_at:null,player_times:{},player_on_field:{},finished:true,film_link:""},
   {opponent:"Athletico Espanol",date:"2026-04-25",time:"14:30",venue:"HP 11 West",home_score:3,away_score:5,goals:[],half:2,half_started_at:null,player_times:{},player_on_field:{},finished:true,film_link:""},
   {opponent:"South Dallas Leon",date:"2026-05-02",time:"14:30",venue:"HP 12 East",home_score:5,away_score:2,goals:[],half:2,half_started_at:null,player_times:{},player_on_field:{},finished:true,film_link:""},
-  {opponent:"Raptors",date:"2026-05-05",time:"18:00",venue:"HP 11 East",home_score:0,away_score:0,goals:[],half:0,half_started_at:null,player_times:{},player_on_field:{},finished:false,film_link:""},
+  {opponent:"Raptors",date:"2026-05-05",time:"18:00",venue:"HP 11 East",home_score:8,away_score:0,goals:[],half:2,half_started_at:null,player_times:{},player_on_field:{},finished:true,film_link:""},
   {opponent:"Hurricanes",date:"2026-05-09",time:"14:30",venue:"HP 11 East",home_score:0,away_score:0,goals:[],half:0,half_started_at:null,player_times:{},player_on_field:{},finished:false,film_link:""},
   {opponent:"Misumi/Spiderz 16-17B",date:"2026-05-16",time:"13:00",venue:"HP 11 West",home_score:0,away_score:0,goals:[],half:0,half_started_at:null,player_times:{},player_on_field:{},finished:false,film_link:""},
   {opponent:"Raptors",date:"2026-05-17",time:"15:30",venue:"HP 11 West",home_score:0,away_score:0,goals:[],half:0,half_started_at:null,player_times:{},player_on_field:{},finished:false,film_link:""}
