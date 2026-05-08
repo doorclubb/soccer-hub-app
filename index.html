@@ -1048,7 +1048,12 @@
                   `}
                   <div style="flex: 1;">
                     <div style="font-weight: 600; font-size: 1rem;">${p.name}</div>
-                    <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">${stats.goals} goals · ${formatTime(stats.playtime)} played</div>
+                    <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">
+                      ${state.user.role === 'coach'
+                        ? `${stats.goals} goals · ${formatTime(stats.playtime)} played`
+                        : `${stats.goals} goals`
+                      }
+                    </div>
                   </div>
                   ${state.user.role === 'coach' ? `
                     <button onclick="removePlayer('${p.id}')" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 1.25rem; line-height: 1;">&times;</button>
