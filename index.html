@@ -8,6 +8,9 @@
   <!-- Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
     * {
       margin: 0;
@@ -17,76 +20,88 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: linear-gradient(135deg, #0a0f1a 0%, #1a1f2e 100%);
-      color: #e2e8f0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0f1419;
+      color: #e5e7eb;
       min-height: 100vh;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1400px;
       margin: 0 auto;
-      padding: 1rem;
+      padding: 1.5rem;
     }
 
     .card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      border-radius: 1rem;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
       padding: 1.5rem;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
     .btn {
       padding: 0.75rem 1.5rem;
-      border-radius: 0.5rem;
+      border-radius: 8px;
       border: none;
-      font-size: 1rem;
+      font-size: 0.9375rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      background: #3b82f6;
       color: white;
     }
 
     .btn-primary:hover {
-      opacity: 0.9;
+      background: #2563eb;
       transform: translateY(-1px);
     }
 
     .btn-secondary {
-      background: rgba(148, 163, 184, 0.1);
-      color: #e2e8f0;
+      background: #374151;
+      color: #e5e7eb;
+    }
+
+    .btn-secondary:hover {
+      background: #4b5563;
     }
 
     input, select {
       width: 100%;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      background: rgba(15, 23, 42, 0.5);
-      color: #e2e8f0;
-      font-size: 1rem;
+      padding: 0.875rem;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #111827;
+      color: #e5e7eb;
+      font-size: 0.9375rem;
+      font-family: inherit;
     }
 
     input:focus, select:focus {
       outline: none;
-      border-color: #0ea5e9;
-      box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.1);
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
     h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
+      font-size: 1.875rem;
+      margin-bottom: 1.5rem;
+      font-weight: 700;
+      color: #f9fafb;
     }
 
     h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #f9fafb;
     }
 
     .login-container {
@@ -99,27 +114,26 @@
 
     .login-box {
       width: 100%;
-      max-width: 400px;
+      max-width: 420px;
     }
 
     .logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 1rem;
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
-      border-radius: 1.5rem;
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      border-radius: 16px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.5rem;
     }
 
     .tab-bar {
       display: flex;
       gap: 0.5rem;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.25rem;
-      border-radius: 0.75rem;
+      background: #111827;
+      padding: 0.375rem;
+      border-radius: 10px;
       margin-bottom: 1.5rem;
     }
 
@@ -128,15 +142,15 @@
       padding: 0.75rem;
       background: transparent;
       border: none;
-      color: rgba(226, 232, 240, 0.5);
-      border-radius: 0.5rem;
+      color: #9ca3af;
+      border-radius: 8px;
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .tab-btn.active {
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      background: #3b82f6;
       color: white;
     }
 
@@ -145,105 +159,131 @@
     }
 
     .error {
-      color: #f87171;
+      color: #ef4444;
       font-size: 0.875rem;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
       text-align: center;
     }
 
     .success {
-      color: #4ade80;
+      color: #10b981;
       font-size: 0.875rem;
-      margin-top: 0.5rem;
+      margin-top: 0.75rem;
       text-align: center;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 1rem;
       margin-bottom: 1.5rem;
     }
 
     .stat-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      border-radius: 0.75rem;
-      padding: 1rem;
+      background: linear-gradient(135deg, #1e293b 0%, #1a1f2e 100%);
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
     }
 
     .stat-label {
-      font-size: 0.75rem;
-      color: #94a3b8;
+      font-size: 0.8125rem;
+      color: #9ca3af;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       margin-bottom: 0.5rem;
+      font-weight: 600;
     }
 
     .stat-value {
-      font-size: 2rem;
+      font-size: 2.25rem;
       font-weight: 700;
-      color: #06b6d4;
+      color: #f9fafb;
+      line-height: 1;
     }
 
     .nav {
-      background: rgba(15, 23, 42, 0.8);
-      backdrop-filter: blur(12px);
-      padding: 1rem;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      padding: 1rem 1.5rem;
       margin-bottom: 1.5rem;
-      border-radius: 1rem;
+      border-radius: 12px;
       display: flex;
-      gap: 0.5rem;
+      gap: 0.75rem;
       flex-wrap: wrap;
+      align-items: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
     .nav-btn {
-      padding: 0.5rem 1rem;
+      padding: 0.625rem 1rem;
       background: transparent;
       border: none;
-      color: rgba(226, 232, 240, 0.6);
-      border-radius: 0.5rem;
+      color: #9ca3af;
+      border-radius: 8px;
       cursor: pointer;
       font-weight: 500;
       transition: all 0.2s;
+      font-size: 0.9375rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
     .nav-btn:hover {
-      color: #e2e8f0;
-      background: rgba(148, 163, 184, 0.1);
+      color: #e5e7eb;
+      background: #374151;
     }
 
     .nav-btn.active {
-      color: #06b6d4;
-      background: rgba(6, 182, 212, 0.1);
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
     }
 
     .score-display {
-      font-size: 4rem;
+      font-size: 4.5rem;
       font-weight: 900;
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      line-height: 1;
     }
 
     .game-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      border-radius: 0.75rem;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 1rem;
+      transition: all 0.2s;
+    }
+
+    .game-card:hover {
+      border-color: #3b82f6;
+      transform: translateY(-2px);
     }
 
     .game-bar {
       width: 4px;
-      height: 48px;
+      height: 56px;
       border-radius: 2px;
+      flex-shrink: 0;
     }
 
     .bar-win { background: #10b981; }
@@ -252,28 +292,29 @@
     .bar-upcoming { background: #3b82f6; }
 
     .player-card {
-      background: rgba(30, 41, 59, 0.6);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(148, 163, 184, 0.1);
-      border-radius: 0.75rem;
-      padding: 1rem;
-      margin-bottom: 0.75rem;
+      background: #1a1f2e;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
       gap: 1rem;
+      transition: all 0.2s;
     }
 
     .avatar {
       width: 48px;
       height: 48px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%);
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.125rem;
+      flex-shrink: 0;
     }
 
     .grid {
@@ -282,12 +323,29 @@
     }
 
     .grid-2 {
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .icon {
+      width: 20px;
+      height: 20px;
     }
 
     @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
       .score-display {
-        font-size: 3rem;
+        font-size: 3.5rem;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+      }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
       }
     }
   </style>
@@ -296,7 +354,7 @@
   <div id="app">
     <div class="login-container">
       <div style="text-align: center;">
-        <div style="color: #94a3b8; font-size: 1.5rem; margin-top: 2rem;">Loading...</div>
+        <div style="color: #6b7280; font-size: 1.125rem; margin-top: 2rem;">Loading...</div>
       </div>
     </div>
   </div>
@@ -308,7 +366,7 @@
     if (typeof supabase === 'undefined') {
       document.getElementById('app').innerHTML = `
         <div class="login-container">
-          <div style="text-align: center; color: #f87171;">
+          <div style="text-align: center; color: #ef4444;">
             <h2>Error Loading App</h2>
             <p>Supabase library failed to load. Please refresh the page.</p>
           </div>
@@ -338,7 +396,7 @@
       timerInterval: null
     };
 
-    // Seed games
+    // Seed games with goals counted in home_score
     const SEED_GAMES = [
       {opponent:"JC United FC",date:"2026-02-28",time:"11:30",venue:"HP 12 West",home_score:5,away_score:1,finished:true},
       {opponent:"Athletico Espanol",date:"2026-03-14",time:"10:00",venue:"HP 11 West",home_score:0,away_score:3,finished:true},
@@ -392,6 +450,35 @@
       return { goals: totalGoals, playtime: totalPlaytime };
     };
 
+    // LocalStorage persistence
+    const saveSession = () => {
+      if (state.user && state.team) {
+        localStorage.setItem('soccerHubSession', JSON.stringify({
+          user: state.user,
+          team: state.team
+        }));
+      }
+    };
+
+    const loadSession = () => {
+      const session = localStorage.getItem('soccerHubSession');
+      if (session) {
+        try {
+          const data = JSON.parse(session);
+          state.user = data.user;
+          state.team = data.team;
+          return true;
+        } catch (e) {
+          console.error('Failed to load session', e);
+        }
+      }
+      return false;
+    };
+
+    const clearSession = () => {
+      localStorage.removeItem('soccerHubSession');
+    };
+
     // Load data
     async function loadData() {
       if (!state.team) return;
@@ -431,6 +518,7 @@
 
       state.user = { role };
       state.team = data;
+      saveSession();
       await loadData();
       state.view = 'dashboard';
       render();
@@ -448,23 +536,13 @@
         throw new Error('Team name already taken');
       }
 
-      const formations = [{
-        name: "1-2-3-1",
-        positions: [
-          {id:"gk",label:"GK",x:50,y:85},
-          {id:"lb",label:"LB",x:25,y:65},{id:"rb",label:"RB",x:75,y:65},
-          {id:"lw",label:"LW",x:15,y:40},{id:"cm",label:"CM",x:50,y:50},{id:"rw",label:"RW",x:85,y:40},
-          {id:"st",label:"ST",x:50,y:15}
-        ]
-      }];
-
       const { data: team, error } = await sb
         .from('teams')
         .insert({
           name,
           coach_pass: coachPass,
           player_pass: playerPass || '',
-          formations,
+          formations: [],
           lineup: {},
           active_formation: 0,
           leaderboard_public: false
@@ -474,7 +552,7 @@
 
       if (error) throw error;
 
-      // Seed games
+      // Seed games for Spiderz 16B
       if (name.toLowerCase().match(/spiderz 16b|itejugheueue/)) {
         const games = SEED_GAMES.map(g => ({
           ...g,
@@ -497,9 +575,15 @@
       return `
         <div class="login-container">
           <div class="login-box">
-            <div class="logo">⚽</div>
+            <div class="logo">
+              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2 L12 22 M2 12 L22 12"/>
+                <path d="M7 7 L17 17 M7 17 L17 7"/>
+              </svg>
+            </div>
             <h1 style="text-align: center; margin-bottom: 0.5rem;">Soccer Hub</h1>
-            <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Professional Team Management</p>
+            <p style="text-align: center; color: #9ca3af; margin-bottom: 2rem; font-size: 0.9375rem;">Professional Team Management</p>
 
             <div class="card">
               <div class="tab-bar">
@@ -516,7 +600,7 @@
                   </select>
                   <input id="l-pass" type="password" placeholder="Password" />
                   <div id="login-error" class="error hidden"></div>
-                  <button onclick="doLogin()" class="btn btn-primary" style="width: 100%;">Sign In</button>
+                  <button onclick="doLogin()" class="btn btn-primary" style="width: 100%; justify-content: center;">Sign In</button>
                 </div>
               </div>
 
@@ -526,7 +610,7 @@
                   <input id="c-coach" type="password" placeholder="Coach password" />
                   <input id="c-player" type="password" placeholder="Player password (optional)" />
                   <div id="create-error" class="error hidden"></div>
-                  <button onclick="doCreate()" class="btn btn-primary" style="width: 100%;">Create Team</button>
+                  <button onclick="doCreate()" class="btn btn-primary" style="width: 100%; justify-content: center;">Create Team</button>
                 </div>
               </div>
             </div>
@@ -540,7 +624,18 @@
       const wins = finished.filter(g => g.home_score > g.away_score).length;
       const losses = finished.filter(g => g.home_score < g.away_score).length;
       const draws = finished.filter(g => g.home_score === g.away_score).length;
-      const totalGoals = state.games.reduce((sum, g) => sum + (g.goals?.length || 0), 0);
+
+      // Count goals from both goals array AND home_score for seeded games
+      const totalGoals = state.games.reduce((sum, g) => {
+        if (g.goals && g.goals.length > 0) {
+          // If there are goals tracked with players, count those
+          return sum + g.goals.length;
+        } else if (g.finished && g.home_score > 0) {
+          // Otherwise for finished seeded games, count home_score
+          return sum + g.home_score;
+        }
+        return sum;
+      }, 0);
 
       // Calculate leaderboard
       const playerStats = state.players.map(p => {
@@ -558,11 +653,11 @@
               <div class="stat-value">${wins}–${losses}–${draws}</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Goals</div>
+              <div class="stat-label">Goals Scored</div>
               <div class="stat-value">${totalGoals}</div>
             </div>
             <div class="stat-card">
-              <div class="stat-label">Games</div>
+              <div class="stat-label">Games Played</div>
               <div class="stat-value">${finished.length}</div>
             </div>
             <div class="stat-card">
@@ -572,32 +667,32 @@
           </div>
 
           <div class="card">
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Leaderboard</h2>
+            <h2>Leaderboard</h2>
             ${playerStats.length > 0 ? `
               <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                 ${playerStats.map((p, idx) => `
-                  <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem;
-                    background: ${idx === 0 ? 'rgba(251, 191, 36, 0.1)' : 'rgba(30, 41, 59, 0.4)'};
-                    border-radius: 0.5rem; border-left: 3px solid ${
+                  <div style="display: flex; align-items: center; gap: 0.75rem; padding: 0.875rem;
+                    background: ${idx === 0 ? 'rgba(251, 191, 36, 0.12)' : '#111827'};
+                    border-radius: 10px; border-left: 3px solid ${
                       idx === 0 ? '#fbbf24' : idx === 1 ? '#9ca3af' : idx === 2 ? '#cd7f32' : 'transparent'
                     };">
-                    <div style="font-size: 1.25rem; font-weight: 700; color: #94a3b8; min-width: 1.75rem; text-align: center;">
+                    <div style="font-size: 1.125rem; font-weight: 700; color: #6b7280; min-width: 2rem; text-align: center;">
                       ${idx + 1}
                     </div>
                     ${p.photo ? `
-                      <img src="${p.photo}" alt="${p.name}" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
+                      <img src="${p.photo}" alt="${p.name}" style="width: 44px; height: 44px; border-radius: 50%; object-fit: cover;" />
                     ` : `
-                      <div class="avatar" style="width: 40px; height: 40px; font-size: 1rem;">${getInitials(p.name)}</div>
+                      <div class="avatar" style="width: 44px; height: 44px; font-size: 1rem;">${getInitials(p.name)}</div>
                     `}
-                    <div style="flex: 1; font-weight: 600; font-size: 1rem;">${p.name}</div>
-                    <div style="font-size: 1.5rem; font-weight: 700; color: #06b6d4; min-width: 2rem; text-align: right;">
+                    <div style="flex: 1; font-weight: 600; font-size: 0.9375rem;">${p.name}</div>
+                    <div style="font-size: 1.625rem; font-weight: 700; color: #3b82f6; min-width: 2.5rem; text-align: right;">
                       ${p.goals}
                     </div>
                   </div>
                 `).join('')}
               </div>
             ` : `
-              <p style="color: #94a3b8; text-align: center; padding: 2rem;">
+              <p style="color: #6b7280; text-align: center; padding: 2rem;">
                 No player stats yet. Start tracking games to see the leaderboard!
               </p>
             `}
@@ -612,39 +707,41 @@
 
       return `
         <div class="container">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
             <h1>Schedule & Results</h1>
             ${state.user.role === 'coach' ? `
-              <button onclick="showAddGame()" class="btn btn-primary">+ Add Game</button>
+              <button onclick="showAddGame()" class="btn btn-primary">
+                <i data-lucide="plus" class="icon"></i> Add Game
+              </button>
             ` : ''}
           </div>
 
           <div id="add-game-form" class="hidden card" style="margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">New Game</h2>
+            <h2>New Game</h2>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
               <input id="ng-opponent" type="text" placeholder="Opponent name" />
               <input id="ng-date" type="date" />
               <input id="ng-time" type="time" />
               <input id="ng-venue" type="text" placeholder="Venue" />
-              <button onclick="createGame()" class="btn btn-primary" style="width: 100%;">Create Game</button>
+              <button onclick="createGame()" class="btn btn-primary" style="width: 100%; justify-content: center;">Create Game</button>
             </div>
           </div>
 
           ${upcoming.length > 0 ? `
-            <h2 style="font-size: 0.875rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0.75rem;">UPCOMING</h2>
+            <h2 style="font-size: 0.875rem; color: #6b7280; margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Upcoming</h2>
             ${upcoming.map(g => `
               <div class="game-card">
                 <div class="game-bar bar-upcoming"></div>
                 <div style="flex: 1;">
-                  <div style="font-weight: 600;">vs ${g.opponent}</div>
-                  <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
+                  <div style="font-weight: 600; font-size: 1rem;">vs ${g.opponent}</div>
+                  <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
                 </div>
               </div>
             `).join('')}
           ` : ''}
 
           ${finished.length > 0 ? `
-            <h2 style="font-size: 0.875rem; color: #94a3b8; margin-top: 1.5rem; margin-bottom: 0.75rem;">RESULTS</h2>
+            <h2 style="font-size: 0.875rem; color: #6b7280; margin-top: 1.5rem; margin-bottom: 1rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Results</h2>
             ${finished.map(g => {
               const won = g.home_score > g.away_score;
               const lost = g.home_score < g.away_score;
@@ -653,13 +750,13 @@
                 <div class="game-card">
                   <div class="game-bar ${barClass}"></div>
                   <div style="flex: 1;">
-                    <div style="font-weight: 600;">vs ${g.opponent}</div>
-                    <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
+                    <div style="font-weight: 600; font-size: 1rem;">vs ${g.opponent}</div>
+                    <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
                   </div>
                   <div style="text-align: right;">
-                    <div style="font-size: 1.25rem; font-weight: 700;">${g.home_score} – ${g.away_score}</div>
-                    <div style="font-size: 0.75rem; color: ${won ? '#10b981' : lost ? '#ef4444' : '#6b7280'};">
-                      ${won ? 'WIN' : lost ? 'LOSS' : 'DRAW'}
+                    <div style="font-size: 1.5rem; font-weight: 700;">${g.home_score} – ${g.away_score}</div>
+                    <div style="font-size: 0.75rem; color: ${won ? '#10b981' : lost ? '#ef4444' : '#6b7280'}; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">
+                      ${won ? 'Win' : lost ? 'Loss' : 'Draw'}
                     </div>
                   </div>
                 </div>
@@ -673,21 +770,23 @@
     function renderRoster() {
       return `
         <div class="container">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
             <h1>Roster (${state.players.length})</h1>
             ${state.user.role === 'coach' ? `
-              <button onclick="showAddPlayer()" class="btn btn-primary">+ Add Player</button>
+              <button onclick="showAddPlayer()" class="btn btn-primary">
+                <i data-lucide="user-plus" class="icon"></i> Add Player
+              </button>
             ` : ''}
           </div>
 
           <div id="add-player-form" class="hidden card" style="margin-bottom: 1.5rem;">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">New Player</h2>
+            <h2>New Player</h2>
             <input id="np-name" type="text" placeholder="Player name" style="margin-bottom: 1rem;" />
             <div style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Photo (optional)</label>
-              <input id="np-photo" type="file" accept="image/*" style="padding: 0.5rem;" />
+              <label style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem; display: block;">Photo (optional)</label>
+              <input id="np-photo" type="file" accept="image/*" style="padding: 0.625rem;" />
             </div>
-            <button onclick="addPlayer()" class="btn btn-primary" style="width: 100%;">Add Player</button>
+            <button onclick="addPlayer()" class="btn btn-primary" style="width: 100%; justify-content: center;">Add Player</button>
           </div>
 
           <div class="grid grid-2">
@@ -701,11 +800,11 @@
                     <div class="avatar">${getInitials(p.name)}</div>
                   `}
                   <div style="flex: 1;">
-                    <div style="font-weight: 600;">${p.name}</div>
-                    <div style="font-size: 0.875rem; color: #94a3b8;">⚽ ${stats.goals} goals · ${formatTime(stats.playtime)} played</div>
+                    <div style="font-weight: 600; font-size: 1rem;">${p.name}</div>
+                    <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">${stats.goals} goals · ${formatTime(stats.playtime)} played</div>
                   </div>
                   ${state.user.role === 'coach' ? `
-                    <button onclick="removePlayer('${p.id}')" class="btn-secondary" style="padding: 0.5rem;">×</button>
+                    <button onclick="removePlayer('${p.id}')" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 1.25rem; line-height: 1;">&times;</button>
                   ` : ''}
                 </div>
               `;
@@ -713,79 +812,15 @@
           </div>
 
           ${state.players.length === 0 ? `
-            <div style="text-align: center; padding: 3rem; color: #94a3b8;">
-              No players yet. Add your first player to get started!
+            <div style="text-align: center; padding: 4rem 2rem; color: #6b7280;">
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin: 0 auto 1rem;">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <p>No players yet. Add your first player to get started!</p>
             </div>
           ` : ''}
-        </div>
-      `;
-    }
-
-    function renderLineup() {
-      const formations = state.team.formations || [];
-      const activeFormation = formations[state.team.active_formation || 0];
-      const lineup = state.team.lineup || {};
-
-      return `
-        <div class="container">
-          <h1>Lineup Builder</h1>
-
-          ${formations.length > 0 ? `
-            <div class="card" style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Formation</label>
-              <select onchange="changeFormation(this.value)" style="margin-bottom: 0;">
-                ${formations.map((f, idx) => `
-                  <option value="${idx}" ${idx === state.team.active_formation ? 'selected' : ''}>${f.name}</option>
-                `).join('')}
-              </select>
-            </div>
-
-            ${activeFormation ? `
-              <div class="card">
-                <div style="position: relative; background: linear-gradient(to bottom, #10b981 0%, #059669 100%);
-                  border-radius: 0.75rem; padding: 2rem 1rem; min-height: 500px;">
-
-                  ${activeFormation.positions.map(pos => {
-                    const assignedPlayer = lineup[pos.id];
-                    const player = assignedPlayer ? state.players.find(p => p.id === assignedPlayer) : null;
-
-                    return `
-                      <div style="position: absolute; left: ${pos.x}%; top: ${pos.y}%;
-                        transform: translate(-50%, -50%); text-align: center;">
-                        <div style="width: 48px; height: 48px; border-radius: 50%;
-                          background: ${player ? 'linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)' : 'rgba(255, 255, 255, 0.3)'};
-                          border: 2px solid white; display: flex; align-items: center; justify-content: center;
-                          color: white; font-weight: 700; cursor: pointer; margin-bottom: 0.25rem;"
-                          onclick="assignPosition('${pos.id}')">
-                          ${player ? getInitials(player.name) : pos.label}
-                        </div>
-                        ${player ? `
-                          <div style="font-size: 0.75rem; color: white; font-weight: 600; text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
-                            ${player.name.split(' ')[0]}
-                          </div>
-                        ` : ''}
-                      </div>
-                    `;
-                  }).join('')}
-                </div>
-
-                <div id="assign-player" class="hidden" style="margin-top: 1rem;">
-                  <h3 style="font-size: 1rem; margin-bottom: 0.75rem;">Assign to <span id="pos-label"></span></h3>
-                  <select id="player-select" style="margin-bottom: 0.75rem;">
-                    <option value="">-- Clear Position --</option>
-                    ${state.players.map(p => `
-                      <option value="${p.id}">${p.name}</option>
-                    `).join('')}
-                  </select>
-                  <button onclick="savePosition()" class="btn btn-primary" style="width: 100%;">Save</button>
-                </div>
-              </div>
-            ` : ''}
-          ` : `
-            <div class="card">
-              <p style="color: #94a3b8;">No formations available</p>
-            </div>
-          `}
         </div>
       `;
     }
@@ -796,47 +831,47 @@
           <h1>Settings</h1>
 
           <div class="card">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Team Information</h2>
-            <div style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Team Name</label>
+            <h2>Team Information</h2>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem; display: block; font-weight: 500;">Team Name</label>
               <div style="font-weight: 600; font-size: 1.125rem;">${state.team.name}</div>
             </div>
 
-            <div style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">
+            <div>
+              <label style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem; display: block; font-weight: 500;">
                 Public Leaderboard
               </label>
               <label style="display: flex; align-items: center; cursor: pointer;">
                 <input type="checkbox" ${state.team.leaderboard_public ? 'checked' : ''}
                   onchange="toggleLeaderboard(this.checked)"
-                  style="width: auto; margin-right: 0.5rem;" />
-                <span>Allow public access to team stats</span>
+                  style="width: auto; margin-right: 0.75rem;" />
+                <span style="font-size: 0.9375rem;">Allow public access to team stats</span>
               </label>
             </div>
           </div>
 
           <div class="card">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Passwords</h2>
-            <p style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 1rem;">
+            <h2>Passwords</h2>
+            <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">
               Update your team passwords
             </p>
             <div style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Coach Password</label>
+              <label style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem; display: block; font-weight: 500;">Coach Password</label>
               <input id="new-coach-pass" type="password" placeholder="New coach password" />
             </div>
-            <div style="margin-bottom: 1rem;">
-              <label style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem; display: block;">Player Password</label>
+            <div style="margin-bottom: 1.5rem;">
+              <label style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem; display: block; font-weight: 500;">Player Password</label>
               <input id="new-player-pass" type="password" placeholder="New player password (optional)" />
             </div>
             <button onclick="updatePasswords()" class="btn btn-primary">Update Passwords</button>
           </div>
 
-          <div class="card" style="border-color: rgba(239, 68, 68, 0.2);">
-            <h2 style="font-size: 1.25rem; margin-bottom: 1rem; color: #f87171;">Danger Zone</h2>
-            <p style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 1rem;">
+          <div class="card" style="border-color: #dc2626;">
+            <h2 style="color: #ef4444;">Danger Zone</h2>
+            <p style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 1.5rem;">
               Permanently delete your team and all associated data
             </p>
-            <button onclick="deleteTeam()" class="btn" style="background: #ef4444; color: white;">Delete Team</button>
+            <button onclick="deleteTeam()" class="btn" style="background: #dc2626; color: white;">Delete Team</button>
           </div>
         </div>
       `;
@@ -851,20 +886,21 @@
             <h1>Live Game</h1>
             ${upcomingGames.length > 0 ? `
               <div class="card">
-                <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Select a game to track</h2>
+                <h2>Select a game to track</h2>
                 ${upcomingGames.map(g => `
                   <div class="game-card" onclick="startGame('${g.id}')" style="cursor: pointer;">
                     <div class="game-bar bar-upcoming"></div>
                     <div style="flex: 1;">
-                      <div style="font-weight: 600;">vs ${g.opponent}</div>
-                      <div style="font-size: 0.875rem; color: #94a3b8;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
+                      <div style="font-weight: 600; font-size: 1rem;">vs ${g.opponent}</div>
+                      <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;">${formatDate(g.date)} · ${g.time} · ${g.venue}</div>
                     </div>
+                    <i data-lucide="chevron-right" class="icon" style="color: #6b7280;"></i>
                   </div>
                 `).join('')}
               </div>
             ` : `
               <div class="card">
-                <p style="color: #94a3b8;">No upcoming games scheduled</p>
+                <p style="color: #6b7280;">No upcoming games scheduled</p>
               </div>
             `}
           </div>
@@ -879,34 +915,35 @@
         return `
           <div class="container">
             <div class="card">
-              <h1 style="margin-bottom: 1rem;">${state.team.name} vs ${game.opponent}</h1>
-              <h2 style="font-size: 1.25rem; margin-bottom: 1.5rem;">Select Starting Lineup</h2>
-              <p style="color: #94a3b8; margin-bottom: 1.5rem;">Choose which players will start on the field</p>
+              <h1 style="margin-bottom: 0.5rem;">${state.team.name} vs ${game.opponent}</h1>
+              <h2 style="color: #9ca3af; font-weight: 500; margin-bottom: 2rem;">Select Starting Lineup</h2>
+              <p style="color: #9ca3af; margin-bottom: 1.5rem; font-size: 0.9375rem;">Choose which players will start on the field</p>
 
               <div style="display: grid; gap: 0.75rem;">
                 ${state.players.map(p => {
                   const isSelected = state.tempStarting?.includes(p.id);
                   return `
                     <div onclick="toggleStarting('${p.id}')" class="player-card"
-                      style="cursor: pointer; background: ${isSelected ? 'rgba(16, 185, 129, 0.2)' : 'rgba(30, 41, 59, 0.6)'};
-                      border: 2px solid ${isSelected ? '#10b981' : 'transparent'};">
+                      style="cursor: pointer; background: ${isSelected ? 'rgba(59, 130, 246, 0.15)' : '#1a1f2e'};
+                      border: 2px solid ${isSelected ? '#3b82f6' : '#2d3748'};">
                       ${p.photo ? `
                         <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
                       ` : `
                         <div class="avatar">${getInitials(p.name)}</div>
                       `}
                       <div style="flex: 1;">
-                        <div style="font-weight: 600;">${p.name}</div>
-                        <div style="font-size: 0.875rem; color: ${isSelected ? '#10b981' : '#94a3b8'};">
-                          ${isSelected ? '✓ Starting' : 'Tap to add'}
+                        <div style="font-weight: 600; font-size: 1rem;">${p.name}</div>
+                        <div style="font-size: 0.875rem; color: ${isSelected ? '#3b82f6' : '#9ca3af'}; margin-top: 0.25rem;">
+                          ${isSelected ? 'Starting' : 'Tap to select'}
                         </div>
                       </div>
+                      ${isSelected ? `<i data-lucide="check-circle" class="icon" style="color: #3b82f6;"></i>` : ''}
                     </div>
                   `;
                 }).join('')}
               </div>
 
-              <button onclick="confirmStarting()" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">
+              <button onclick="confirmStarting()" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem; justify-content: center; font-size: 1rem; padding: 1rem;">
                 Continue (${state.tempStarting?.length || 0} players selected)
               </button>
             </div>
@@ -926,175 +963,197 @@
 
       return `
         <div class="container">
-          <div class="card" style="margin-bottom: 1rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+          <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
               <div>
-                <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.25rem;">
+                <div style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.5rem;">
                   ${formatDate(game.date)} · ${game.time}
                 </div>
                 <div style="font-size: 1.5rem; font-weight: 700;">${state.team.name} vs ${game.opponent}</div>
               </div>
-              <button onclick="endGame()" class="btn btn-secondary">End Game</button>
+              <button onclick="endGame()" class="btn btn-secondary">
+                <i data-lucide="square" class="icon"></i> End Game
+              </button>
             </div>
 
-            <div style="text-align: center; margin: 2rem 0;">
+            <div style="text-align: center; margin: 2.5rem 0;">
               <div class="score-display" id="score-display">${game.home_score} – ${game.away_score}</div>
-              <div style="font-size: 1.25rem; color: #94a3b8; margin-top: 0.5rem;" id="game-timer">
-                Game Time: ${formatTime(gameTime)}
+              <div style="font-size: 1.125rem; color: #9ca3af; margin-top: 0.75rem; font-weight: 500;" id="game-timer">
+                <i data-lucide="clock" class="icon" style="display: inline; width: 18px; height: 18px; vertical-align: middle;"></i>
+                ${formatTime(gameTime)}
               </div>
-              <div style="display: flex; gap: 0.5rem; justify-content: center; margin-top: 1rem;">
-                <button onclick="adjustScore(-1)" class="btn btn-secondary">–</button>
-                <button onclick="showGoalScorer()" class="btn btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;">+ GOAL</button>
+              <div style="display: flex; gap: 0.75rem; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap;">
+                <button onclick="adjustScore(-1)" class="btn btn-secondary" style="min-width: 48px;">−</button>
+                <button onclick="showGoalScorer()" class="btn btn-primary" style="font-size: 1.0625rem; padding: 1rem 2rem;">
+                  <i data-lucide="target" class="icon"></i> Goal
+                </button>
               </div>
             </div>
 
             <div id="goal-scorer-modal" class="hidden" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-              background: rgba(0, 0, 0, 0.9); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
-              <div class="card" style="max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
-                <h2 style="font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">⚽ GOAL!</h2>
-                <p style="text-align: center; color: #94a3b8; margin-bottom: 2rem;">Who scored?</p>
-                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
+              background: rgba(0, 0, 0, 0.92); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 1rem;">
+              <div class="card" style="max-width: 700px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                <h2 style="font-size: 2rem; margin-bottom: 0.75rem; text-align: center;">Goal Scored!</h2>
+                <p style="text-align: center; color: #9ca3af; margin-bottom: 2rem;">Who scored?</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
                   ${state.players.map(p => `
                     <button onclick="addGoal('${p.id}')" class="btn btn-secondary"
-                      style="text-align: left; padding: 1.5rem; height: auto; transition: all 0.2s;"
-                      onmouseover="this.style.transform='scale(1.02)'; this.style.background='rgba(6, 182, 212, 0.2)'"
-                      onmouseout="this.style.transform='scale(1)'; this.style.background='rgba(148, 163, 184, 0.1)'">
-                      <div style="display: flex; align-items: center; gap: 1rem;">
+                      style="text-align: left; padding: 1.25rem; height: auto; transition: all 0.2s; justify-content: flex-start;"
+                      onmouseover="this.style.transform='scale(1.02)'; this.style.background='rgba(59, 130, 246, 0.2)'"
+                      onmouseout="this.style.transform='scale(1)'; this.style.background='#374151'">
+                      <div style="display: flex; align-items: center; gap: 1rem; width: 100%;">
                         ${p.photo ? `
-                          <img src="${p.photo}" alt="${p.name}" style="width: 64px; height: 64px; border-radius: 50%; object-fit: cover;" />
+                          <img src="${p.photo}" alt="${p.name}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;" />
                         ` : `
-                          <div class="avatar" style="width: 64px; height: 64px; font-size: 1.5rem;">${getInitials(p.name)}</div>
+                          <div class="avatar" style="width: 56px; height: 56px; font-size: 1.25rem;">${getInitials(p.name)}</div>
                         `}
-                        <span style="font-weight: 700; font-size: 1.25rem;">${p.name}</span>
+                        <span style="font-weight: 600; font-size: 1.125rem; flex: 1;">${p.name}</span>
                       </div>
                     </button>
                   `).join('')}
                 </div>
-                <button onclick="hideGoalScorer()" class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1rem;">Cancel</button>
+                <button onclick="hideGoalScorer()" class="btn btn-secondary" style="width: 100%; margin-top: 1.5rem; padding: 1rem; font-size: 1rem; justify-content: center;">Cancel</button>
               </div>
             </div>
 
             <div style="display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap;">
               ${game.half === 0 ? `
-                <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1;">Start 1st Half</button>
+                <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                  <i data-lucide="play" class="icon"></i> Start 1st Half
+                </button>
               ` : game.half === 1 ? `
                 ${halfRunning ? `
-                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1;">End 1st Half</button>
+                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1; justify-content: center;">
+                    <i data-lucide="pause" class="icon"></i> End 1st Half
+                  </button>
                 ` : `
-                  <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1;">Resume 1st Half</button>
-                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1;">Start 2nd Half</button>
+                  <button onclick="startHalf(1)" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                    <i data-lucide="play" class="icon"></i> Resume 1st Half
+                  </button>
+                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                    <i data-lucide="play" class="icon"></i> Start 2nd Half
+                  </button>
                 `}
               ` : game.half === 2 ? `
                 ${halfRunning ? `
-                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1;">End 2nd Half</button>
+                  <button onclick="endHalf()" class="btn btn-secondary" style="flex: 1; justify-content: center;">
+                    <i data-lucide="pause" class="icon"></i> End 2nd Half
+                  </button>
                 ` : `
-                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1;">Resume 2nd Half</button>
+                  <button onclick="startHalf(2)" class="btn btn-primary" style="flex: 1; justify-content: center;">
+                    <i data-lucide="play" class="icon"></i> Resume 2nd Half
+                  </button>
                 `}
               ` : ''}
             </div>
 
-            <div style="margin-top: 1rem; padding: 1rem; background: rgba(0, 0, 0, 0.2); border-radius: 0.5rem;">
-              <div style="font-size: 0.875rem; color: #94a3b8; margin-bottom: 0.5rem;">
-                Half: ${game.half === 0 ? 'Not Started' : game.half === 1 ? '1st Half' : '2nd Half'}
+            <div style="margin-top: 1.5rem; padding: 1.25rem; background: #111827; border-radius: 10px; border: 1px solid #374151;">
+              <div style="font-size: 0.875rem; color: #9ca3af; margin-bottom: 0.75rem;">
+                <strong style="color: #e5e7eb;">Status:</strong> ${game.half === 0 ? 'Not Started' : game.half === 1 ? '1st Half' : '2nd Half'}
                 ${halfRunning ? ' (Running)' : ' (Paused)'}
               </div>
-              <div style="font-size: 0.875rem; color: #94a3b8;">
-                Film Link: <input id="film-link" type="text" value="${game.film_link || ''}" onchange="updateFilmLink(this.value)"
-                  style="display: inline-block; width: auto; min-width: 200px; padding: 0.25rem 0.5rem; font-size: 0.875rem; margin-left: 0.5rem;" />
+              <div style="font-size: 0.875rem; color: #9ca3af;">
+                <label style="color: #e5e7eb; font-weight: 500;">Film Link:</label>
+                <input id="film-link" type="text" value="${game.film_link || ''}" onchange="updateFilmLink(this.value)"
+                  placeholder="Enter video URL"
+                  style="display: block; width: 100%; margin-top: 0.5rem; padding: 0.625rem; font-size: 0.875rem;" />
               </div>
             </div>
           </div>
 
           <div class="card">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-              <h2 style="font-size: 1.25rem; margin: 0;">Players</h2>
-              <div style="font-size: 0.875rem; color: #94a3b8;">
-                <span style="color: #10b981; font-weight: 600;">${onFieldCount} on field</span> ·
-                ${state.players.length - onFieldCount} bench
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <h2 style="margin: 0;">Players</h2>
+              <div style="font-size: 0.875rem; color: #9ca3af;">
+                <span style="color: #10b981; font-weight: 600;">${onFieldCount}</span> on field ·
+                <span style="color: #9ca3af;">${state.players.length - onFieldCount}</span> bench
               </div>
             </div>
 
-            <div style="margin-bottom: 1rem;">
-              <h3 style="font-size: 0.875rem; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
-                ON FIELD
+            <div style="margin-bottom: 1.5rem;">
+              <h3 style="font-size: 0.8125rem; color: #10b981; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.875rem; font-weight: 600;">
+                On Field
               </h3>
-              <div id="players-on-field" style="display: grid; gap: 0.5rem;">
+              <div id="players-on-field" style="display: grid; gap: 0.75rem;">
                 ${state.players.filter(p => game.player_on_field?.[p.id]).map(p => {
                   const totalTime = game.player_times?.[p.id] || 0;
                   const currentTime = halfRunning ? Date.now() - game.half_started_at : 0;
                   const displayTime = totalTime + currentTime;
 
                   return `
-                    <div class="player-card" style="background: rgba(16, 185, 129, 0.15); border-left: 4px solid #10b981;">
+                    <div class="player-card" style="background: rgba(16, 185, 129, 0.12); border-color: #10b981;">
                       ${p.photo ? `
                         <img src="${p.photo}" alt="${p.name}" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover;" />
                       ` : `
                         <div class="avatar" style="width: 56px; height: 56px; font-size: 1.25rem;">${getInitials(p.name)}</div>
                       `}
                       <div style="flex: 1;">
-                        <div style="font-weight: 700; font-size: 1.125rem;">${p.name}</div>
-                        <div style="font-size: 1rem; color: #10b981; font-weight: 600;" id="timer-${p.id}">
+                        <div style="font-weight: 700; font-size: 1.0625rem;">${p.name}</div>
+                        <div style="font-size: 1rem; color: #10b981; font-weight: 600; margin-top: 0.25rem;" id="timer-${p.id}">
                           ${formatTime(displayTime)}
                         </div>
                       </div>
                       <button onclick="togglePlayer('${p.id}')" class="btn btn-secondary"
-                        style="padding: 0.75rem 1.25rem; font-size: 1rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                        style="padding: 0.75rem 1rem; ${!halfRunning ? 'opacity: 0.4; cursor: not-allowed;' : ''}"
                         ${!halfRunning ? 'disabled' : ''}>
-                        Sub Out
+                        <i data-lucide="arrow-down-circle" class="icon"></i> Sub Out
                       </button>
                     </div>
                   `;
-                }).join('') || '<div style="color: #94a3b8; text-align: center; padding: 1rem;">No players on field</div>'}
+                }).join('') || '<div style="color: #6b7280; text-align: center; padding: 1.5rem; background: #111827; border-radius: 10px;">No players on field</div>'}
               </div>
             </div>
 
             <div>
-              <h3 style="font-size: 0.875rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem;">
-                BENCH
+              <h3 style="font-size: 0.8125rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.875rem; font-weight: 600;">
+                Bench
               </h3>
-              <div id="players-bench" style="display: grid; gap: 0.5rem;">
+              <div id="players-bench" style="display: grid; gap: 0.75rem;">
                 ${state.players.filter(p => !game.player_on_field?.[p.id]).map(p => {
                   const totalTime = game.player_times?.[p.id] || 0;
                   const displayTime = totalTime;
 
                   return `
-                    <div class="player-card" style="background: rgba(30, 41, 59, 0.4);">
+                    <div class="player-card" style="background: #111827;">
                       ${p.photo ? `
                         <img src="${p.photo}" alt="${p.name}" style="width: 48px; height: 48px; border-radius: 50%; object-fit: cover;" />
                       ` : `
                         <div class="avatar">${getInitials(p.name)}</div>
                       `}
                       <div style="flex: 1;">
-                        <div style="font-weight: 600;">${p.name}</div>
-                        <div style="font-size: 0.875rem; color: #94a3b8;" id="timer-${p.id}">
+                        <div style="font-weight: 600; font-size: 1rem;">${p.name}</div>
+                        <div style="font-size: 0.875rem; color: #9ca3af; margin-top: 0.25rem;" id="timer-${p.id}">
                           ${formatTime(displayTime)}
                         </div>
                       </div>
                       <button onclick="togglePlayer('${p.id}')" class="btn btn-primary"
-                        style="padding: 0.75rem 1.25rem; ${!halfRunning ? 'opacity: 0.5; cursor: not-allowed;' : ''}"
+                        style="padding: 0.75rem 1rem; ${!halfRunning ? 'opacity: 0.4; cursor: not-allowed;' : ''}"
                         ${!halfRunning ? 'disabled' : ''}>
-                        Sub In
+                        <i data-lucide="arrow-up-circle" class="icon"></i> Sub In
                       </button>
                     </div>
                   `;
-                }).join('') || '<div style="color: #94a3b8; text-align: center; padding: 1rem;">All players on field</div>'}
+                }).join('') || '<div style="color: #6b7280; text-align: center; padding: 1.5rem; background: #111827; border-radius: 10px;">All players on field</div>'}
               </div>
             </div>
           </div>
 
           ${game.goals?.length > 0 ? `
             <div class="card">
-              <h2 style="font-size: 1.25rem; margin-bottom: 1rem;">Goals (${game.goals.length})</h2>
+              <h2>Goals (${game.goals.length})</h2>
               ${game.goals.map((goal, idx) => {
                 const player = state.players.find(p => p.id === goal.player_id);
                 return `
-                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem;
-                    background: rgba(16, 185, 129, 0.1); border-radius: 0.5rem; margin-bottom: 0.5rem;">
-                    <div>
-                      <div style="font-weight: 600;">${player?.name || 'Unknown'}</div>
-                      <div style="font-size: 0.875rem; color: #94a3b8;">${goal.minute}'</div>
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem;
+                    background: rgba(16, 185, 129, 0.12); border-radius: 10px; margin-bottom: 0.75rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div style="display: flex; align-items: center; gap: 0.75rem;">
+                      <div style="width: 8px; height: 8px; border-radius: 50%; background: #10b981;"></div>
+                      <div>
+                        <div style="font-weight: 600; font-size: 1rem;">${player?.name || 'Unknown'}</div>
+                        <div style="font-size: 0.875rem; color: #9ca3af;">${goal.minute}'</div>
+                      </div>
                     </div>
-                    <button onclick="removeGoal(${idx})" class="btn-secondary" style="padding: 0.5rem;">×</button>
+                    <button onclick="removeGoal(${idx})" class="btn-secondary" style="padding: 0.5rem 0.75rem; font-size: 1.25rem; line-height: 1;">&times;</button>
                   </div>
                 `;
               }).join('')}
@@ -1106,19 +1165,37 @@
 
     function renderApp() {
       const views = state.user?.role === 'coach'
-        ? ['dashboard', 'live', 'history', 'roster', 'lineup', 'settings']
+        ? ['dashboard', 'live', 'history', 'roster', 'settings']
         : ['dashboard', 'history', 'roster'];
+
+      const iconMap = {
+        dashboard: 'layout-dashboard',
+        live: 'play-circle',
+        history: 'calendar',
+        roster: 'users',
+        settings: 'settings'
+      };
 
       return `
         <div class="container">
           <div class="nav">
-            <div style="flex: 1; font-weight: 700; font-size: 1.25rem;">⚽ ${state.team.name}</div>
+            <div style="flex: 1; font-weight: 700; font-size: 1.125rem; display: flex; align-items: center; gap: 0.5rem; color: #f9fafb;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M12 2 L12 22 M2 12 L22 12"/>
+              </svg>
+              ${state.team.name}
+            </div>
             ${views.map(v => `
               <button onclick="setView('${v}')" class="nav-btn ${state.view === v ? 'active' : ''}">
+                <i data-lucide="${iconMap[v]}" class="icon"></i>
                 ${v.charAt(0).toUpperCase() + v.slice(1)}
               </button>
             `).join('')}
-            <button onclick="logout()" class="nav-btn">Sign Out</button>
+            <button onclick="logout()" class="nav-btn">
+              <i data-lucide="log-out" class="icon"></i>
+              Sign Out
+            </button>
           </div>
         </div>
 
@@ -1127,7 +1204,6 @@
             state.view === 'live' ? renderLiveGame() :
             state.view === 'history' ? renderHistory() :
             state.view === 'roster' ? renderRoster() :
-            state.view === 'lineup' ? renderLineup() :
             state.view === 'settings' ? renderSettings() : ''}
         </div>
       `;
@@ -1204,12 +1280,15 @@
     };
 
     window.logout = function() {
+      clearSession();
       state = {
         user: null,
         team: null,
         players: [],
         games: [],
-        view: 'login'
+        view: 'login',
+        activeGame: null,
+        timerInterval: null
       };
       render();
     };
@@ -1529,53 +1608,12 @@
 
         const gameTimerEl = document.getElementById('game-timer');
         if (gameTimerEl) {
-          gameTimerEl.textContent = `Game Time: ${formatTime(gameTime)}`;
+          const icon = gameTimerEl.querySelector('i[data-lucide="clock"]');
+          gameTimerEl.textContent = formatTime(gameTime);
+          if (icon) gameTimerEl.prepend(icon);
         }
       }, 1000);
     }
-
-    // Lineup functions
-    let selectedPosition = null;
-
-    window.changeFormation = async function(index) {
-      await sb.from('teams').update({ active_formation: parseInt(index) }).eq('id', state.team.id);
-      state.team.active_formation = parseInt(index);
-      render();
-    };
-
-    window.assignPosition = function(posId) {
-      selectedPosition = posId;
-      const formations = state.team.formations || [];
-      const activeFormation = formations[state.team.active_formation || 0];
-      const pos = activeFormation.positions.find(p => p.id === posId);
-
-      document.getElementById('pos-label').textContent = pos.label;
-      document.getElementById('assign-player').classList.remove('hidden');
-
-      // Set current player if assigned
-      const currentPlayer = state.team.lineup?.[posId];
-      if (currentPlayer) {
-        document.getElementById('player-select').value = currentPlayer;
-      }
-    };
-
-    window.savePosition = async function() {
-      const playerId = document.getElementById('player-select').value;
-      const updatedLineup = { ...state.team.lineup };
-
-      if (playerId) {
-        updatedLineup[selectedPosition] = playerId;
-      } else {
-        delete updatedLineup[selectedPosition];
-      }
-
-      await sb.from('teams').update({ lineup: updatedLineup }).eq('id', state.team.id);
-      state.team.lineup = updatedLineup;
-
-      document.getElementById('assign-player').classList.add('hidden');
-      selectedPosition = null;
-      render();
-    };
 
     // Settings functions
     window.toggleLeaderboard = async function(checked) {
@@ -1623,11 +1661,26 @@
       } else {
         app.innerHTML = renderApp();
       }
+
+      // Initialize Lucide icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
     }
 
     // Initialize
     console.log('Initializing app...');
-    render();
+
+    // Try to restore session
+    if (loadSession()) {
+      console.log('Session restored');
+      loadData().then(() => {
+        state.view = 'dashboard';
+        render();
+      });
+    } else {
+      render();
+    }
   </script>
 </body>
 </html>
